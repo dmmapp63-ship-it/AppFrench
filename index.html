@@ -205,6 +205,7 @@
           <button class="pill practice-tab" data-tab="pronunciation">Phát âm</button>
           <button class="pill practice-tab" data-tab="dialogue">Hội thoại</button>
           <button class="pill practice-tab" data-tab="listening">Nghe hiểu</button>
+          <button class="pill practice-tab" data-tab="word">🧩 Ghép từ</button>
         </div>
 
         <div class="levels-row" id="practiceLevelRow">
@@ -293,6 +294,41 @@
               </div>
               <div id="listeningAnswers" class="answer-grid"></div>
               <p id="listeningFeedback" class="feedback"></p>
+            </div>
+          </article>
+        </div>
+
+        <div id="wordPanel" class="practice-panel" style="display:none;">
+          <article class="card practice-card">
+            <div class="word-mode-row">
+              <button class="pill word-mode-btn active" data-word-mode="sentence">🧩 Ghép câu</button>
+              <button class="pill word-mode-btn" data-word-mode="match">🔗 Nối cặp</button>
+            </div>
+
+            <div id="sentenceBuilderPanel">
+              <h4>Sắp xếp các từ thành câu đúng</h4>
+              <p id="sentenceMeta" class="task-meta"></p>
+              <p id="sentencePrompt" class="practice-prompt"></p>
+              <div class="answer-area" id="sentenceAnswerArea">
+                <span class="answer-hint">Nhấn các từ bên dưới để ghép câu</span>
+              </div>
+              <div class="word-bank" id="wordBankArea"></div>
+              <p id="sentenceFeedback" class="feedback"></p>
+              <div class="practice-buttons">
+                <button id="checkSentence" class="pill">Kiểm tra</button>
+                <button id="clearSentence" class="pill secondary">Xóa hết</button>
+                <button id="nextSentence" class="pill secondary">Câu tiếp →</button>
+              </div>
+            </div>
+
+            <div id="matchGamePanel" style="display:none;">
+              <h4>Nối từ tiếng Pháp với nghĩa tiếng Việt</h4>
+              <p id="matchScore" class="task-meta"></p>
+              <div class="match-grid" id="matchGrid"></div>
+              <p id="matchFeedback" class="feedback"></p>
+              <div class="practice-buttons">
+                <button id="newMatchGame" class="pill secondary">Bộ mới 🔀</button>
+              </div>
             </div>
           </article>
         </div>

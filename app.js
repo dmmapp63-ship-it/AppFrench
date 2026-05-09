@@ -88,9 +88,358 @@ const pronunciationMeta = document.getElementById('pronunciationMeta');
 const dialogueMeta = document.getElementById('dialogueMeta');
 
 const vocabularies = (typeof vocabularyData !== 'undefined' && vocabularyData.length) ? vocabularyData : [
-  { level: 'A1', topic: 'Chào hỏi', word: 'Bonjour', meaning: 'Xin chào', example: 'Bonjour, comment ça va ?', difficulty: 1 },
-  { level: 'A1', topic: 'Chào hỏi', word: 'Merci', meaning: 'Cảm ơn', example: 'Merci beaucoup !', difficulty: 1 },
-  { level: 'A2', topic: 'Du lịch', word: 'Réserver', meaning: 'Đặt trước', example: 'Je voudrais réserver une chambre.', difficulty: 2 }
+  // ── Chào hỏi ──────────────────────────────────────────────────
+  { level:'A1', topic:'Chào hỏi', word:'Bonjour',       meaning:'Xin chào',         example:'Bonjour, comment ça va ?', difficulty:1 },
+  { level:'A1', topic:'Chào hỏi', word:'Merci',         meaning:'Cảm ơn',           example:'Merci beaucoup !', difficulty:1 },
+  { level:'A1', topic:'Chào hỏi', word:'Au revoir',     meaning:'Tạm biệt',         example:'Au revoir, à bientôt !', difficulty:1 },
+  { level:'A1', topic:'Chào hỏi', word:'S\'il vous plaît', meaning:'Xin hãy / làm ơn', example:'Un café, s\'il vous plaît.', difficulty:1 },
+  { level:'A1', topic:'Chào hỏi', word:'Excusez-moi',   meaning:'Xin lỗi',          example:'Excusez-moi, où est la gare ?', difficulty:1 },
+  { level:'A1', topic:'Chào hỏi', word:'Oui',           meaning:'Vâng / có',        example:'Oui, je comprends.', difficulty:1 },
+  { level:'A1', topic:'Chào hỏi', word:'Non',           meaning:'Không',            example:'Non, merci.', difficulty:1 },
+
+  // ── Giới thiệu ────────────────────────────────────────────────
+  { level:'A1', topic:'Giới thiệu', word:'Je m\'appelle', meaning:'Tôi tên là',     example:'Je m\'appelle Marie.', difficulty:1 },
+  { level:'A1', topic:'Giới thiệu', word:'Je suis',       meaning:'Tôi là',         example:'Je suis étudiant.', difficulty:1 },
+  { level:'A1', topic:'Giới thiệu', word:'J\'ai',         meaning:'Tôi có',         example:'J\'ai vingt ans.', difficulty:1 },
+  { level:'A1', topic:'Giới thiệu', word:'J\'habite',     meaning:'Tôi sống ở',     example:'J\'habite à Paris.', difficulty:1 },
+
+  // ── Du lịch ───────────────────────────────────────────────────
+  { level:'A2', topic:'Du lịch', word:'Réserver',       meaning:'Đặt trước',        example:'Je voudrais réserver une chambre.', difficulty:2 },
+  { level:'A2', topic:'Du lịch', word:'L\'hôtel',       meaning:'Khách sạn',        example:'L\'hôtel est près de la gare.', difficulty:2 },
+  { level:'A2', topic:'Du lịch', word:'La gare',        meaning:'Nhà ga',           example:'Le train part de la gare à midi.', difficulty:2 },
+  { level:'A2', topic:'Du lịch', word:'L\'aéroport',    meaning:'Sân bay',          example:'Nous arrivons à l\'aéroport à 8h.', difficulty:2 },
+  { level:'A2', topic:'Du lịch', word:'Le billet',      meaning:'Vé',               example:'Je voudrais un billet aller-retour.', difficulty:2 },
+
+  // ── Cơ thể ────────────────────────────────────────────────────
+  { level:'A1', topic:'Cơ thể', word:'Un enfant',       meaning:'Trẻ con',          example:'Un enfant joue dans le jardin.', difficulty:1 },
+  { level:'A2', topic:'Cơ thể', word:'Un adulte',       meaning:'Người lớn',        example:'Les adultes travaillent toute la journée.', difficulty:2 },
+  { level:'A2', topic:'Cơ thể', word:'L\'adolescence',  meaning:'Tuổi thanh niên',  example:'L\'adolescence est une période difficile.', difficulty:2 },
+  { level:'A2', topic:'Cơ thể', word:'L\'apparence',    meaning:'Vẻ bề ngoài',      example:'L\'apparence physique est importante.', difficulty:2 },
+  { level:'A2', topic:'Cơ thể', word:'Le cœur',         meaning:'Trái tim',         example:'Le cœur bat environ 70 fois par minute.', difficulty:2 },
+  { level:'A2', topic:'Cơ thể', word:'Les poumons',     meaning:'Phổi',             example:'Les poumons servent à respirer.', difficulty:2 },
+  { level:'A2', topic:'Cơ thể', word:'L\'estomac',      meaning:'Dạ dày',           example:'J\'ai mal à l\'estomac.', difficulty:2 },
+  { level:'A2', topic:'Cơ thể', word:'La peau',         meaning:'Da',               example:'La peau protège notre corps.', difficulty:2 },
+  { level:'A2', topic:'Cơ thể', word:'Un muscle',       meaning:'Cơ bắp',           example:'Le sport développe les muscles.', difficulty:2 },
+  { level:'B1', topic:'Cơ thể', word:'La sexualité',    meaning:'Giới tính / tình dục', example:'On parle de sexualité au cours de biologie.', difficulty:3 },
+  { level:'B1', topic:'Cơ thể', word:'Une ressemblance',meaning:'Sự tương đồng',    example:'Il y a une ressemblance entre les deux frères.', difficulty:3 },
+  { level:'B1', topic:'Cơ thể', word:'Un squelette',    meaning:'Bộ xương',         example:'Le squelette humain compte 206 os.', difficulty:3 },
+
+  // ── Gia đình ──────────────────────────────────────────────────
+  { level:'A1', topic:'Gia đình', word:'Le père',        meaning:'Bố',              example:'Mon père travaille dans un bureau.', difficulty:1 },
+  { level:'A1', topic:'Gia đình', word:'La mère',        meaning:'Mẹ',              example:'Ma mère cuisine très bien.', difficulty:1 },
+  { level:'A1', topic:'Gia đình', word:'Le grand-père',  meaning:'Ông',             example:'Mon grand-père a quatre-vingts ans.', difficulty:1 },
+  { level:'A1', topic:'Gia đình', word:'La grand-mère',  meaning:'Bà',              example:'Ma grand-mère fait de bons gâteaux.', difficulty:1 },
+  { level:'A1', topic:'Gia đình', word:'Le frère',       meaning:'Anh/em trai',     example:'Mon frère s\'appelle Lucas.', difficulty:1 },
+  { level:'A1', topic:'Gia đình', word:'La sœur',        meaning:'Chị/em gái',      example:'Ma sœur est plus jeune que moi.', difficulty:1 },
+  { level:'A2', topic:'Gia đình', word:'La tante',       meaning:'Cô / dì',         example:'Ma tante habite à Lyon.', difficulty:2 },
+  { level:'A2', topic:'Gia đình', word:'L\'oncle',       meaning:'Chú / bác',       example:'Mon oncle est médecin.', difficulty:2 },
+  { level:'A2', topic:'Gia đình', word:'Le cousin',      meaning:'Anh/em họ (nam)', example:'Mon cousin vient nous voir ce week-end.', difficulty:2 },
+  { level:'A2', topic:'Gia đình', word:'La cousine',     meaning:'Chị/em họ (nữ)', example:'Ma cousine est très sympathique.', difficulty:2 },
+  { level:'A2', topic:'Gia đình', word:'Le petit-fils',  meaning:'Cháu trai',       example:'Le petit-fils joue avec son grand-père.', difficulty:2 },
+  { level:'A2', topic:'Gia đình', word:'La petite-fille',meaning:'Cháu gái',        example:'La petite-fille ressemble à sa grand-mère.', difficulty:2 },
+  { level:'A2', topic:'Gia đình', word:'Le neveu',       meaning:'Cháu họ (nam)',   example:'Mon neveu a cinq ans.', difficulty:2 },
+  { level:'A2', topic:'Gia đình', word:'La nièce',       meaning:'Cháu họ (nữ)',    example:'Ma nièce apprend le piano.', difficulty:2 },
+  { level:'A2', topic:'Gia đình', word:'Un couple',      meaning:'Cặp đôi',         example:'Ce couple est marié depuis dix ans.', difficulty:2 },
+  { level:'A2', topic:'Gia đình', word:'Un mariage',     meaning:'Hôn nhân / đám cưới', example:'Leur mariage a eu lieu en juin.', difficulty:2 },
+  { level:'B1', topic:'Gia đình', word:'Un(e) époux(se)',meaning:'Chồng / vợ',      example:'Mon épouse travaille à l\'hôpital.', difficulty:3 },
+  { level:'B1', topic:'Gia đình', word:'Le beau-frère',  meaning:'Anh rể',          example:'Mon beau-frère est très gentil.', difficulty:3 },
+  { level:'B1', topic:'Gia đình', word:'La belle-fille', meaning:'Chị dâu',         example:'La belle-fille prépare le dîner.', difficulty:3 },
+  { level:'B1', topic:'Gia đình', word:'Un divorce',     meaning:'Ly hôn',          example:'Le divorce est de plus en plus fréquent.', difficulty:3 },
+
+  // ── Chỗ ở ─────────────────────────────────────────────────────
+  { level:'A2', topic:'Chỗ ở', word:'Un appartement',   meaning:'Căn hộ',           example:'J\'habite dans un appartement au troisième étage.', difficulty:2 },
+  { level:'A2', topic:'Chỗ ở', word:'Un domicile',      meaning:'Nơi cư trú / nhà', example:'Quel est votre domicile ?', difficulty:2 },
+  { level:'A2', topic:'Chỗ ở', word:'Un pavillon',      meaning:'Nhà riêng có sân', example:'Ils habitent dans un pavillon avec un grand jardin.', difficulty:2 },
+  { level:'A2', topic:'Chỗ ở', word:'Un quartier',      meaning:'Khu phố',          example:'C\'est un quartier calme et agréable.', difficulty:2 },
+  { level:'A2', topic:'Chỗ ở', word:'Un salon',         meaning:'Phòng khách',      example:'Nous regardons la télé dans le salon.', difficulty:2 },
+  { level:'A2', topic:'Chỗ ở', word:'Une chambre',      meaning:'Phòng ngủ',        example:'Ma chambre est au premier étage.', difficulty:2 },
+  { level:'A2', topic:'Chỗ ở', word:'La cuisine',       meaning:'Phòng bếp',        example:'Ma mère cuisine dans la cuisine.', difficulty:2 },
+  { level:'A2', topic:'Chỗ ở', word:'La salle de bains',meaning:'Phòng tắm',        example:'La salle de bains est à gauche.', difficulty:2 },
+  { level:'A2', topic:'Chỗ ở', word:'L\'entrée',        meaning:'Cửa vào / lối vào',example:'Les chaussures sont dans l\'entrée.', difficulty:2 },
+  { level:'A2', topic:'Chỗ ở', word:'Un garage',        meaning:'Gara / chỗ để xe', example:'La voiture est dans le garage.', difficulty:2 },
+  { level:'B1', topic:'Chỗ ở', word:'Une résidence',    meaning:'Khu cư trú',       example:'Cette résidence est très sécurisée.', difficulty:3 },
+  { level:'B1', topic:'Chỗ ở', word:'L\'immeuble',      meaning:'Toà nhà chung cư', example:'Cet immeuble a douze étages.', difficulty:3 },
+  { level:'B1', topic:'Chỗ ở', word:'Une agence immobilière', meaning:'Công ty bất động sản', example:'Nous avons trouvé l\'appartement via une agence immobilière.', difficulty:3 },
+  { level:'B1', topic:'Chỗ ở', word:'L\'espace',        meaning:'Không gian',       example:'Cet appartement manque d\'espace.', difficulty:3 },
+  { level:'B1', topic:'Chỗ ở', word:'L\'ascenseur',     meaning:'Thang máy',        example:'L\'ascenseur est en panne.', difficulty:3 },
+  { level:'B1', topic:'Chỗ ở', word:'Le couloir',       meaning:'Hành lang',        example:'La salle de bains est au bout du couloir.', difficulty:3 },
+  { level:'B1', topic:'Chỗ ở', word:'L\'étage',         meaning:'Tầng',             example:'Nous habitons au cinquième étage.', difficulty:3 },
+  { level:'B1', topic:'Chỗ ở', word:'Le rez-de-chaussée',meaning:'Tầng trệt',       example:'La boutique se trouve au rez-de-chaussée.', difficulty:3 },
+  { level:'B1', topic:'Chỗ ở', word:'Le parking',       meaning:'Bãi đỗ xe',        example:'Il y a un parking souterrain.', difficulty:3 },
+  { level:'B1', topic:'Chỗ ở', word:'La luminosité',    meaning:'Độ sáng',          example:'Cet appartement a une bonne luminosité.', difficulty:3 },
+  { level:'B1', topic:'Chỗ ở', word:'L\'orientation',   meaning:'Hướng (nhà)',      example:'L\'appartement a une orientation plein sud.', difficulty:3 },
+  { level:'B1', topic:'Chỗ ở', word:'La vue',           meaning:'Tầm nhìn / cảnh', example:'Depuis ma fenêtre, j\'ai une belle vue sur la mer.', difficulty:3 },
+  { level:'B2', topic:'Chỗ ở', word:'Les mètres carrés',meaning:'Diện tích (m²)',   example:'Cet appartement fait soixante mètres carrés.', difficulty:4 },
+
+  // ── Đồ vật ────────────────────────────────────────────────────
+  { level:'A1', topic:'Đồ vật', word:'La table',        meaning:'Cái bàn',          example:'Les livres sont sur la table.', difficulty:1 },
+  { level:'A1', topic:'Đồ vật', word:'La fenêtre',      meaning:'Cửa sổ',           example:'J\'ouvre la fenêtre pour avoir de l\'air.', difficulty:1 },
+  { level:'A1', topic:'Đồ vật', word:'Le lit',          meaning:'Giường ngủ',       example:'Je me couche dans mon lit à 22h.', difficulty:1 },
+  { level:'A1', topic:'Đồ vật', word:'La lampe',        meaning:'Đèn ngủ',          example:'J\'allume la lampe pour lire.', difficulty:1 },
+  { level:'A2', topic:'Đồ vật', word:'Le fauteuil',     meaning:'Ghế bành',         example:'Grand-père dort dans son fauteuil.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'Le canapé',       meaning:'Ghế sofa / đi văng',example:'Nous regardons la télé sur le canapé.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'Le rideau',       meaning:'Rèm cửa',          example:'Ferme les rideaux, s\'il te plaît.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'Le tableau',      meaning:'Bức tranh / bảng', example:'Il y a un tableau de Monet sur le mur.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'L\'horloge',      meaning:'Đồng hồ treo tường',example:'L\'horloge indique midi.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'La télévision',   meaning:'Tivi',             example:'Je regarde la télévision le soir.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'L\'évier',        meaning:'Bồn rửa bát',      example:'Mets les assiettes dans l\'évier.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'Le lave-vaisselle',meaning:'Máy rửa bát',     example:'Je mets les assiettes dans le lave-vaisselle.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'Le bol',          meaning:'Bát / tô',         example:'Je mange mes céréales dans un bol.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'L\'assiette',     meaning:'Đĩa',              example:'Pose l\'assiette sur la table.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'Le verre',        meaning:'Cốc / ly',         example:'Je bois de l\'eau dans un verre.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'La poêle',        meaning:'Chảo',             example:'Je fais cuire les œufs dans la poêle.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'Le four à micro-ondes',meaning:'Lò vi sóng',  example:'Je réchauffe ma soupe au four à micro-ondes.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'Le four',         meaning:'Lò nướng',         example:'Je fais cuire le gâteau au four.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'Le réfrigérateur',meaning:'Tủ lạnh',          example:'Le beurre est dans le réfrigérateur.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'Le grille-pain',  meaning:'Máy nướng bánh mì',example:'Je fais griller du pain dans le grille-pain.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'L\'oreiller',     meaning:'Gối',              example:'J\'ai besoin d\'un oreiller confortable.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'La couette',      meaning:'Chăn bông / nệm',  example:'Je me glisse sous la couette.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'La couverture',   meaning:'Chăn / mền',       example:'Il fait froid, prends une couverture.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'Les lits superposés',meaning:'Giường tầng',   example:'Les enfants dorment dans des lits superposés.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'La commode',      meaning:'Tủ đầu giường',    example:'Ma commode est à côté du lit.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'L\'armoire',      meaning:'Tủ quần áo',       example:'Mes vêtements sont dans l\'armoire.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'La douche',       meaning:'Vòi hoa sen',      example:'Je prends une douche tous les matins.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'Le robinet',      meaning:'Vòi nước',         example:'Ferme le robinet après usage.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'Le savon',        meaning:'Xà phòng',         example:'Je me lave les mains avec du savon.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'La baignoire',    meaning:'Bồn tắm',          example:'Je prends un bain dans la baignoire.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'Le lavabo',       meaning:'Bồn rửa mặt',      example:'Je me brosse les dents devant le lavabo.', difficulty:2 },
+  { level:'A2', topic:'Đồ vật', word:'Les toilettes',   meaning:'Bồn cầu / nhà vệ sinh', example:'Les toilettes sont au bout du couloir.', difficulty:2 },
+
+  // ── Thực phẩm ─────────────────────────────────────────────────
+  { level:'A1', topic:'Thực phẩm', word:'Le café',      meaning:'Cà phê',           example:'Je bois un café le matin.', difficulty:1 },
+  { level:'A1', topic:'Thực phẩm', word:'Le pain',      meaning:'Bánh mì',          example:'Je mange du pain au petit-déjeuner.', difficulty:1 },
+  { level:'A2', topic:'Thực phẩm', word:'La baguette',  meaning:'Bánh mì dài',      example:'J\'achète une baguette à la boulangerie.', difficulty:2 },
+  { level:'A2', topic:'Thực phẩm', word:'Le gâteau',    meaning:'Bánh ngọt',        example:'Elle fait un gâteau au chocolat.', difficulty:2 },
+  { level:'A2', topic:'Thực phẩm', word:'Un raisin',    meaning:'Quả nho',          example:'Je mange une grappe de raisins.', difficulty:2 },
+  { level:'A2', topic:'Thực phẩm', word:'Un pamplemousse',meaning:'Quả bưởi',       example:'Le pamplemousse est acide.', difficulty:2 },
+  { level:'A2', topic:'Thực phẩm', word:'Une aubergine',meaning:'Quả cà tím',       example:'Je fais revenir l\'aubergine à la poêle.', difficulty:2 },
+  { level:'A2', topic:'Thực phẩm', word:'Une courgette',meaning:'Quả bí xanh',      example:'J\'ajoute des courgettes dans la soupe.', difficulty:2 },
+  { level:'A2', topic:'Thực phẩm', word:'Une épice',    meaning:'Gia vị',           example:'Le curry est une épice très parfumée.', difficulty:2 },
+  { level:'A2', topic:'Thực phẩm', word:'Un crabe',     meaning:'Con cua',          example:'Nous mangeons du crabe en entrée.', difficulty:2 },
+  { level:'A2', topic:'Thực phẩm', word:'Des fruits de mer',meaning:'Hải sản',      example:'J\'adore les fruits de mer.', difficulty:2 },
+  { level:'B1', topic:'Thực phẩm', word:'Une brioche',  meaning:'Bánh brioche',     example:'On mange une brioche au petit-déjeuner.', difficulty:3 },
+  { level:'B1', topic:'Thực phẩm', word:'Des céréales', meaning:'Ngũ cốc',          example:'Les céréales sont riches en fibres.', difficulty:3 },
+  { level:'B1', topic:'Thực phẩm', word:'Un cordon bleu',meaning:'Thịt cuộn giăm bông', example:'Il commande un cordon bleu avec des frites.', difficulty:3 },
+  { level:'B1', topic:'Thực phẩm', word:'Un apéritif',  meaning:'Món khai vị / rượu khai vị', example:'On prend l\'apéritif avant le dîner.', difficulty:3 },
+  { level:'B1', topic:'Thực phẩm', word:'Le légume sec',meaning:'Rau khô / đậu khô',example:'Les lentilles sont un légume sec.', difficulty:3 },
+  { level:'B1', topic:'Thực phẩm', word:'Le plat préparé',meaning:'Món ăn chế biến sẵn', example:'Je manque de temps, je prends un plat préparé.', difficulty:3 },
+  { level:'B1', topic:'Thực phẩm', word:'Le produit laitier',meaning:'Sản phẩm từ sữa', example:'Le fromage est un produit laitier.', difficulty:3 },
+  { level:'B1', topic:'Thực phẩm', word:'Végétarien(ne)',meaning:'Người ăn chay',    example:'Elle est végétarienne depuis deux ans.', difficulty:3 },
+  { level:'B1', topic:'Thực phẩm', word:'La charcuterie',meaning:'Thịt nguội',      example:'Il y a de la charcuterie sur le plateau.', difficulty:3 },
+  { level:'B1', topic:'Thực phẩm', word:'Le steak haché',meaning:'Bít tết xay',     example:'Je voudrais un steak haché bien cuit.', difficulty:3 },
+  { level:'B1', topic:'Thực phẩm', word:'La spécialité',meaning:'Món đặc sản',      example:'La bouillabaisse est une spécialité marseillaise.', difficulty:3 },
+
+  // ── Tự nhiên ──────────────────────────────────────────────────
+  { level:'A1', topic:'Tự nhiên', word:'La rose',        meaning:'Hoa hồng',        example:'Il m\'offre une rose rouge.', difficulty:1 },
+  { level:'A2', topic:'Tự nhiên', word:'La mer',         meaning:'Biển',            example:'Nous allons à la mer cet été.', difficulty:2 },
+  { level:'A2', topic:'Tự nhiên', word:'La montagne',    meaning:'Núi',             example:'J\'aime faire de la randonnée en montagne.', difficulty:2 },
+  { level:'A2', topic:'Tự nhiên', word:'La rivière',     meaning:'Sông',            example:'La rivière traverse la ville.', difficulty:2 },
+  { level:'A2', topic:'Tự nhiên', word:'La campagne',    meaning:'Vùng nông thôn',  example:'Il fait bon vivre à la campagne.', difficulty:2 },
+  { level:'A2', topic:'Tự nhiên', word:'Le jardin',      meaning:'Vườn',            example:'Il y a des fleurs dans le jardin.', difficulty:2 },
+  { level:'A2', topic:'Tự nhiên', word:'La marguerite',  meaning:'Hoa cúc',         example:'Les enfants cueillent des marguerites.', difficulty:2 },
+  { level:'A2', topic:'Tự nhiên', word:'Un animal domestique',meaning:'Động vật nuôi trong nhà', example:'Le chat est un animal domestique populaire.', difficulty:2 },
+  { level:'B1', topic:'Tự nhiên', word:'Un mammifère',   meaning:'Động vật có vú',  example:'La baleine est un mammifère marin.', difficulty:3 },
+  { level:'B1', topic:'Tự nhiên', word:'Marin(e)',       meaning:'Thuộc về biển',   example:'La faune marine est très diversifiée.', difficulty:3 },
+  { level:'B1', topic:'Tự nhiên', word:'Le marronnier',  meaning:'Cây hạt dẻ',      example:'Les marronniers fleurissent au printemps.', difficulty:3 },
+  { level:'B1', topic:'Tự nhiên', word:'Un arbre fruitier',meaning:'Cây ăn quả',    example:'Le pommier est un arbre fruitier.', difficulty:3 },
+  { level:'B1', topic:'Tự nhiên', word:'Une menace',     meaning:'Mối đe dọa',      example:'La pollution est une menace pour la biodiversité.', difficulty:3 },
+  { level:'B2', topic:'Tự nhiên', word:'Le réchauffement climatique',meaning:'Sự nóng lên toàn cầu', example:'Le réchauffement climatique affecte tous les pays.', difficulty:4 },
+  { level:'B2', topic:'Tự nhiên', word:'Une énergie renouvelable',meaning:'Năng lượng tái tạo', example:'L\'énergie solaire est une énergie renouvelable.', difficulty:4 },
+  { level:'B2', topic:'Tự nhiên', word:'Un écosystème',  meaning:'Hệ sinh thái',    example:'La forêt amazonienne est un écosystème fragile.', difficulty:4 },
+
+  // ── Động từ cơ bản (top frequency) ───────────────────────────
+  { level:'A1', topic:'Động từ', word:'Être',            meaning:'Là / ở',           example:'Je suis étudiant.', difficulty:1 },
+  { level:'A1', topic:'Động từ', word:'Avoir',           meaning:'Có',               example:'J\'ai vingt ans.', difficulty:1 },
+  { level:'A1', topic:'Động từ', word:'Aller',           meaning:'Đi',               example:'Je vais à l\'école.', difficulty:1 },
+  { level:'A1', topic:'Động từ', word:'Faire',           meaning:'Làm / tạo',        example:'Je fais mes devoirs.', difficulty:1 },
+  { level:'A1', topic:'Động từ', word:'Dire',            meaning:'Nói / nói rằng',   example:'Il dit la vérité.', difficulty:1 },
+  { level:'A1', topic:'Động từ', word:'Pouvoir',         meaning:'Có thể',           example:'Je peux venir demain.', difficulty:1 },
+  { level:'A1', topic:'Động từ', word:'Vouloir',         meaning:'Muốn',             example:'Je veux apprendre le français.', difficulty:1 },
+  { level:'A1', topic:'Động từ', word:'Savoir',          meaning:'Biết (kiến thức)', example:'Tu sais parler français ?', difficulty:1 },
+  { level:'A1', topic:'Động từ', word:'Voir',            meaning:'Nhìn thấy',        example:'Je vois la tour Eiffel.', difficulty:1 },
+  { level:'A1', topic:'Động từ', word:'Venir',           meaning:'Đến',              example:'Il vient de Paris.', difficulty:1 },
+  { level:'A1', topic:'Động từ', word:'Devoir',          meaning:'Phải / cần',       example:'Je dois partir maintenant.', difficulty:1 },
+  { level:'A1', topic:'Động từ', word:'Parler',          meaning:'Nói chuyện',       example:'Tu parles français ?', difficulty:1 },
+  { level:'A1', topic:'Động từ', word:'Prendre',         meaning:'Lấy / bắt',        example:'Je prends le bus tous les jours.', difficulty:1 },
+  { level:'A1', topic:'Động từ', word:'Aimer',           meaning:'Yêu / thích',      example:'J\'aime la musique française.', difficulty:1 },
+  { level:'A1', topic:'Động từ', word:'Donner',          meaning:'Cho / tặng',       example:'Il me donne un cadeau.', difficulty:1 },
+  { level:'A1', topic:'Động từ', word:'Regarder',        meaning:'Nhìn / xem',       example:'Je regarde un film.', difficulty:1 },
+  { level:'A1', topic:'Động từ', word:'Appeler',         meaning:'Gọi / đặt tên',   example:'Comment tu t\'appelles ?', difficulty:1 },
+  { level:'A1', topic:'Động từ', word:'Partir',          meaning:'Rời đi',           example:'Il part en vacances demain.', difficulty:1 },
+  { level:'A1', topic:'Động từ', word:'Mettre',          meaning:'Đặt / mặc',        example:'Je mets mon manteau.', difficulty:1 },
+  { level:'A1', topic:'Động từ', word:'Rester',          meaning:'Ở lại',            example:'Je reste à la maison ce soir.', difficulty:1 },
+  { level:'A1', topic:'Động từ', word:'Arriver',         meaning:'Đến / xảy ra',     example:'Il arrive toujours en retard.', difficulty:1 },
+  { level:'A2', topic:'Động từ', word:'Passer',          meaning:'Qua / trải qua',   example:'Je passe mes vacances en France.', difficulty:2 },
+  { level:'A2', topic:'Động từ', word:'Penser',          meaning:'Nghĩ',             example:'Je pense que c\'est une bonne idée.', difficulty:2 },
+  { level:'A2', topic:'Động từ', word:'Attendre',        meaning:'Chờ đợi',          example:'J\'attends le bus depuis vingt minutes.', difficulty:2 },
+  { level:'A2', topic:'Động từ', word:'Trouver',         meaning:'Tìm thấy / thấy', example:'J\'ai trouvé les clés.', difficulty:2 },
+  { level:'A2', topic:'Động từ', word:'Laisser',         meaning:'Để lại / để cho', example:'Laisse-moi tranquille !', difficulty:2 },
+  { level:'A2', topic:'Động từ', word:'Arrêter',         meaning:'Dừng lại',         example:'Arrête de parler !', difficulty:2 },
+  { level:'A2', topic:'Động từ', word:'Connaître',       meaning:'Biết (người/nơi)', example:'Tu connais Paris ?', difficulty:2 },
+  { level:'A2', topic:'Động từ', word:'Demander',        meaning:'Hỏi / xin',        example:'Je te demande un service.', difficulty:2 },
+  { level:'A2', topic:'Động từ', word:'Comprendre',      meaning:'Hiểu',             example:'Je ne comprends pas cette question.', difficulty:2 },
+  { level:'A2', topic:'Động từ', word:'Sortir',          meaning:'Ra ngoài',         example:'On sort ce soir ?', difficulty:2 },
+  { level:'A2', topic:'Động từ', word:'Entendre',        meaning:'Nghe thấy',        example:'J\'entends de la musique.', difficulty:2 },
+  { level:'A2', topic:'Động từ', word:'Chercher',        meaning:'Tìm kiếm',         example:'Je cherche mon portefeuille.', difficulty:2 },
+  { level:'A2', topic:'Động từ', word:'Aider',           meaning:'Giúp đỡ',          example:'Peux-tu m\'aider ?', difficulty:2 },
+  { level:'A2', topic:'Động từ', word:'Essayer',         meaning:'Thử',              example:'Essaie cette veste !', difficulty:2 },
+  { level:'A2', topic:'Động từ', word:'Revenir',         meaning:'Quay trở lại',     example:'Il revient à dix-neuf heures.', difficulty:2 },
+  { level:'A2', topic:'Động từ', word:'Jouer',           meaning:'Chơi',             example:'Les enfants jouent dans le parc.', difficulty:2 },
+  { level:'A2', topic:'Động từ', word:'Finir',           meaning:'Kết thúc / xong', example:'Tu as fini tes devoirs ?', difficulty:2 },
+  { level:'A2', topic:'Động từ', word:'Perdre',          meaning:'Mất / thua',       example:'J\'ai perdu mon portefeuille.', difficulty:2 },
+  { level:'A2', topic:'Động từ', word:'Sentir',          meaning:'Ngửi / cảm thấy', example:'Ça sent bon !', difficulty:2 },
+  { level:'A2', topic:'Động từ', word:'Rentrer',         meaning:'Về nhà',           example:'Je rentre à la maison à dix-huit heures.', difficulty:2 },
+  { level:'A2', topic:'Động từ', word:'Vivre',           meaning:'Sống',             example:'Il vit en France depuis dix ans.', difficulty:2 },
+  { level:'A2', topic:'Động từ', word:'Tenir',           meaning:'Giữ / nắm',        example:'Tiens la porte, s\'il te plaît.', difficulty:2 },
+  { level:'A2', topic:'Động từ', word:'Suivre',          meaning:'Theo / theo dõi', example:'Suis-moi, s\'il te plaît.', difficulty:2 },
+  { level:'A2', topic:'Động từ', word:'Croire',          meaning:'Tin / cho rằng',  example:'Je crois que tu as raison.', difficulty:2 },
+  { level:'B1', topic:'Động từ', word:'Falloir',         meaning:'Cần phải (il faut)',example:'Il faut étudier pour réussir.', difficulty:3 },
+  { level:'B1', topic:'Động từ', word:'Plaire',          meaning:'Làm hài lòng',     example:'Ce film me plaît beaucoup.', difficulty:3 },
+  { level:'B1', topic:'Động từ', word:'Rendre',          meaning:'Trả lại / làm cho',example:'Ce médicament le rend malade.', difficulty:3 },
+  { level:'B1', topic:'Động từ', word:'Mourir',          meaning:'Chết',             example:'Il est mort dans un accident.', difficulty:3 },
+
+  // ── Danh từ thông dụng ────────────────────────────────────────
+  { level:'A1', topic:'Danh từ', word:'L\'homme',        meaning:'Đàn ông / người',  example:'L\'homme sourit à la caméra.', difficulty:1 },
+  { level:'A1', topic:'Danh từ', word:'La femme',        meaning:'Phụ nữ / vợ',     example:'Cette femme est médecin.', difficulty:1 },
+  { level:'A1', topic:'Danh từ', word:'Le jour',         meaning:'Ngày',             example:'Quel beau jour !', difficulty:1 },
+  { level:'A1', topic:'Danh từ', word:'La nuit',         meaning:'Đêm',              example:'Il fait froid la nuit.', difficulty:1 },
+  { level:'A1', topic:'Danh từ', word:'Le soir',         meaning:'Buổi tối',         example:'Le soir, je regarde la télé.', difficulty:1 },
+  { level:'A1', topic:'Danh từ', word:'La vie',          meaning:'Cuộc sống',        example:'La vie est belle !', difficulty:1 },
+  { level:'A1', topic:'Danh từ', word:'L\'heure',        meaning:'Giờ / thời gian', example:'Quelle heure est-il ?', difficulty:1 },
+  { level:'A1', topic:'Danh từ', word:'Le nom',          meaning:'Tên / họ',         example:'Quel est ton nom de famille ?', difficulty:1 },
+  { level:'A1', topic:'Danh từ', word:'L\'ami(e)',       meaning:'Bạn bè',           example:'C\'est mon meilleur ami.', difficulty:1 },
+  { level:'A1', topic:'Danh từ', word:'La maison',       meaning:'Ngôi nhà',         example:'Je reste à la maison.', difficulty:1 },
+  { level:'A1', topic:'Danh từ', word:'La main',         meaning:'Bàn tay',          example:'Donne-moi la main.', difficulty:1 },
+  { level:'A2', topic:'Danh từ', word:'Le temps',        meaning:'Thời gian / thời tiết', example:'Je n\'ai pas le temps.', difficulty:2 },
+  { level:'A2', topic:'Danh từ', word:'Le monde',        meaning:'Thế giới / mọi người', example:'Tout le monde est là.', difficulty:2 },
+  { level:'A2', topic:'Danh từ', word:'La fois',         meaning:'Lần',              example:'C\'est la première fois.', difficulty:2 },
+  { level:'A2', topic:'Danh từ', word:'L\'an',          meaning:'Năm',              example:'Il a vingt ans.', difficulty:2 },
+  { level:'A2', topic:'Danh từ', word:'Le besoin',       meaning:'Nhu cầu',          example:'J\'ai besoin de toi.', difficulty:2 },
+  { level:'A2', topic:'Danh từ', word:'La peur',         meaning:'Sự sợ hãi',        example:'J\'ai peur du noir.', difficulty:2 },
+  { level:'A2', topic:'Danh từ', word:'Le problème',     meaning:'Vấn đề',           example:'Quel est le problème ?', difficulty:2 },
+  { level:'A2', topic:'Danh từ', word:'L\'argent',       meaning:'Tiền / bạc',       example:'Je n\'ai plus d\'argent.', difficulty:2 },
+  { level:'A2', topic:'Danh từ', word:'Les gens',        meaning:'Mọi người',        example:'Les gens sont très gentils ici.', difficulty:2 },
+  { level:'A2', topic:'Danh từ', word:'La personne',     meaning:'Người',            example:'Il n\'y a personne dans la rue.', difficulty:2 },
+  { level:'B1', topic:'Danh từ', word:'L\'accord',       meaning:'Sự đồng ý / thỏa thuận', example:'D\'accord, je suis d\'accord avec toi.', difficulty:3 },
+  { level:'B1', topic:'Danh từ', word:'Monsieur',        meaning:'Ông / thưa ông',   example:'Bonjour, monsieur le directeur.', difficulty:3 },
+
+  // ── Thời gian ─────────────────────────────────────────────────
+  { level:'A1', topic:'Thời gian', word:'Lundi',          meaning:'Thứ Hai',          example:'Le lundi, j\'ai cours de français.', difficulty:1 },
+  { level:'A1', topic:'Thời gian', word:'Mardi',          meaning:'Thứ Ba',           example:'Le mardi, je vais au sport.', difficulty:1 },
+  { level:'A1', topic:'Thời gian', word:'Mercredi',       meaning:'Thứ Tư',           example:'Mercredi, les enfants n\'ont pas école.', difficulty:1 },
+  { level:'A1', topic:'Thời gian', word:'Jeudi',          meaning:'Thứ Năm',          example:'Jeudi soir, nous allons au cinéma.', difficulty:1 },
+  { level:'A1', topic:'Thời gian', word:'Vendredi',       meaning:'Thứ Sáu',          example:'Le vendredi c\'est le début du week-end.', difficulty:1 },
+  { level:'A1', topic:'Thời gian', word:'Samedi',         meaning:'Thứ Bảy',          example:'Samedi matin, je fais les courses.', difficulty:1 },
+  { level:'A1', topic:'Thời gian', word:'Dimanche',       meaning:'Chủ Nhật',         example:'Le dimanche, toute la famille se retrouve.', difficulty:1 },
+  { level:'A1', topic:'Thời gian', word:'Le printemps',   meaning:'Mùa xuân',         example:'Au printemps, les fleurs éclosent.', difficulty:1 },
+  { level:'A1', topic:'Thời gian', word:'L\'été',         meaning:'Mùa hè',           example:'En été, nous allons à la plage.', difficulty:1 },
+  { level:'A1', topic:'Thời gian', word:'L\'automne',     meaning:'Mùa thu',          example:'En automne, les feuilles tombent.', difficulty:1 },
+  { level:'A1', topic:'Thời gian', word:'L\'hiver',       meaning:'Mùa đông',         example:'En hiver, il neige dans les montagnes.', difficulty:1 },
+  { level:'A1', topic:'Thời gian', word:'Aujourd\'hui',   meaning:'Hôm nay',          example:'Aujourd\'hui, il fait beau.', difficulty:1 },
+  { level:'A1', topic:'Thời gian', word:'Demain',         meaning:'Ngày mai',         example:'Demain, j\'ai un examen important.', difficulty:1 },
+  { level:'A1', topic:'Thời gian', word:'Hier',           meaning:'Hôm qua',          example:'Hier, je suis allé au cinéma.', difficulty:1 },
+  { level:'A2', topic:'Thời gian', word:'La semaine',     meaning:'Tuần',             example:'Je travaille cinq jours par semaine.', difficulty:2 },
+  { level:'A2', topic:'Thời gian', word:'Le mois',        meaning:'Tháng',            example:'Dans un mois, je pars en vacances.', difficulty:2 },
+  { level:'A2', topic:'Thời gian', word:'L\'année',       meaning:'Năm',              example:'Cette année, j\'apprends le français.', difficulty:2 },
+
+  // ── Gia đình (bổ sung) ────────────────────────────────────────
+  { level:'A1', topic:'Gia đình', word:'Le fils',         meaning:'Con trai',         example:'Son fils a dix ans.', difficulty:1 },
+  { level:'A1', topic:'Gia đình', word:'La fille',        meaning:'Con gái',          example:'Sa fille est très intelligente.', difficulty:1 },
+  { level:'A2', topic:'Gia đình', word:'Célibataire',     meaning:'Độc thân',         example:'Il est encore célibataire à trente ans.', difficulty:2 },
+  { level:'A2', topic:'Gia đình', word:'Marié(e)',        meaning:'Đã kết hôn',       example:'Ils sont mariés depuis cinq ans.', difficulty:2 },
+  { level:'A2', topic:'Gia đình', word:'Divorcé(e)',      meaning:'Đã ly hôn',        example:'Elle est divorcée depuis l\'année dernière.', difficulty:2 },
+
+  // ── Mua sắm ───────────────────────────────────────────────────
+  { level:'A2', topic:'Mua sắm', word:'Le magasin',       meaning:'Cửa hàng',         example:'Je vais au magasin acheter des vêtements.', difficulty:2 },
+  { level:'A2', topic:'Mua sắm', word:'Le prix',          meaning:'Giá tiền',         example:'Quel est le prix de cette veste ?', difficulty:2 },
+  { level:'A2', topic:'Mua sắm', word:'La taille',        meaning:'Kích cỡ / số đo',  example:'Quelle est votre taille ?', difficulty:2 },
+  { level:'A2', topic:'Mua sắm', word:'Les soldes',       meaning:'Hàng giảm giá',    example:'Les soldes commencent en janvier.', difficulty:2 },
+  { level:'A2', topic:'Mua sắm', word:'La réduction',     meaning:'Giảm giá',         example:'Il y a une réduction de vingt pour cent.', difficulty:2 },
+  { level:'A2', topic:'Mua sắm', word:'Le caissier',      meaning:'Thu ngân',         example:'Le caissier rend la monnaie.', difficulty:2 },
+  { level:'B1', topic:'Mua sắm', word:'En coton',         meaning:'Bằng vải cotton',  example:'Cette chemise est en coton, très confortable.', difficulty:3 },
+  { level:'B1', topic:'Mua sắm', word:'En cuir',          meaning:'Bằng da',          example:'Ces chaussures sont en cuir véritable.', difficulty:3 },
+  { level:'B1', topic:'Mua sắm', word:'En soie',          meaning:'Bằng lụa',         example:'Cette robe est en soie.', difficulty:3 },
+  { level:'B1', topic:'Mua sắm', word:'La mode',          meaning:'Thời trang',       example:'Paris est la capitale de la mode.', difficulty:3 },
+
+  // ── Nghề nghiệp ───────────────────────────────────────────────
+  { level:'A2', topic:'Nghề nghiệp', word:'L\'étudiant(e)',meaning:'Sinh viên',        example:'Je suis étudiant en droit.', difficulty:2 },
+  { level:'A2', topic:'Nghề nghiệp', word:'Le professeur',meaning:'Giáo viên',         example:'Mon professeur est très patient.', difficulty:2 },
+  { level:'A2', topic:'Nghề nghiệp', word:'Le médecin',   meaning:'Bác sĩ',           example:'Le médecin examine le patient.', difficulty:2 },
+  { level:'A2', topic:'Nghề nghiệp', word:'L\'infirmier(ère)',meaning:'Y tá',          example:'L\'infirmière prend la tension artérielle.', difficulty:2 },
+  { level:'A2', topic:'Nghề nghiệp', word:'Le cuisinier', meaning:'Đầu bếp',          example:'Le cuisinier prépare un plat gastronomique.', difficulty:2 },
+  { level:'B1', topic:'Nghề nghiệp', word:'Le directeur', meaning:'Giám đốc',         example:'Le directeur a signé le contrat.', difficulty:3 },
+  { level:'B1', topic:'Nghề nghiệp', word:'L\'ingénieur', meaning:'Kỹ sư',            example:'Elle est ingénieure en informatique.', difficulty:3 },
+  { level:'B1', topic:'Nghề nghiệp', word:'L\'avocat(e)', meaning:'Luật sư',          example:'Mon avocat défend mes droits.', difficulty:3 },
+  { level:'B1', topic:'Nghề nghiệp', word:'Embaucher',    meaning:'Tuyển dụng',       example:'L\'entreprise va embaucher dix salariés.', difficulty:3 },
+  { level:'B1', topic:'Nghề nghiệp', word:'Licencier',    meaning:'Sa thải',          example:'Il a été licencié pour faute grave.', difficulty:3 },
+  { level:'B2', topic:'Nghề nghiệp', word:'Démissionner', meaning:'Từ chức / nghỉ việc', example:'Elle a démissionné pour créer sa propre entreprise.', difficulty:4 },
+  { level:'B2', topic:'Nghề nghiệp', word:'Le salaire',   meaning:'Lương',            example:'Son salaire a augmenté cette année.', difficulty:4 },
+
+  // ── Công nghệ ─────────────────────────────────────────────────
+  { level:'A2', topic:'Công nghệ', word:'L\'ordinateur',  meaning:'Máy tính',         example:'Je travaille sur mon ordinateur toute la journée.', difficulty:2 },
+  { level:'A2', topic:'Công nghệ', word:'Le téléphone',   meaning:'Điện thoại',       example:'Mon téléphone est en charge.', difficulty:2 },
+  { level:'A2', topic:'Công nghệ', word:'Le mot de passe',meaning:'Mật khẩu',         example:'N\'oublie pas ton mot de passe.', difficulty:2 },
+  { level:'A2', topic:'Công nghệ', word:'L\'application', meaning:'Ứng dụng',         example:'J\'ai installé une nouvelle application.', difficulty:2 },
+  { level:'B1', topic:'Công nghệ', word:'Le courriel',    meaning:'Thư điện tử (email)', example:'J\'ai reçu un courriel important ce matin.', difficulty:3 },
+  { level:'B1', topic:'Công nghệ', word:'Les réseaux sociaux',meaning:'Mạng xã hội', example:'Les réseaux sociaux influencent les jeunes.', difficulty:3 },
+  { level:'B1', topic:'Công nghệ', word:'Télécharger',    meaning:'Tải xuống',        example:'Je télécharge le fichier depuis le site.', difficulty:3 },
+  { level:'B1', topic:'Công nghệ', word:'L\'imprimante',  meaning:'Máy in',           example:'L\'imprimante est en panne.', difficulty:3 },
+  { level:'B1', topic:'Công nghệ', word:'La connexion',   meaning:'Kết nối mạng',     example:'La connexion internet est lente.', difficulty:3 },
+  { level:'B2', topic:'Công nghệ', word:'L\'intelligence artificielle',meaning:'Trí tuệ nhân tạo', example:'L\'intelligence artificielle transforme notre quotidien.', difficulty:4 },
+
+  // ── Giáo dục ──────────────────────────────────────────────────
+  { level:'A1', topic:'Giáo dục', word:'L\'école',        meaning:'Trường học',       example:'Les enfants vont à l\'école le matin.', difficulty:1 },
+  { level:'A2', topic:'Giáo dục', word:'L\'école maternelle',meaning:'Trường mẫu giáo', example:'Mon fils entre à l\'école maternelle cette année.', difficulty:2 },
+  { level:'A2', topic:'Giáo dục', word:'L\'école primaire',meaning:'Trường tiểu học', example:'L\'école primaire dure cinq ans.', difficulty:2 },
+  { level:'A2', topic:'Giáo dục', word:'Le collège',      meaning:'Trường THCS',      example:'Mon frère est au collège.', difficulty:2 },
+  { level:'A2', topic:'Giáo dục', word:'Le lycée',        meaning:'Trường THPT',      example:'Elle passe le bac au lycée.', difficulty:2 },
+  { level:'A2', topic:'Giáo dục', word:'L\'université',   meaning:'Đại học',          example:'Il étudie à l\'université de Paris.', difficulty:2 },
+  { level:'A2', topic:'Giáo dục', word:'Le cours',        meaning:'Bài học / giờ học',example:'Le cours de maths commence à 9h.', difficulty:2 },
+  { level:'B1', topic:'Giáo dục', word:'Réussir un examen',meaning:'Thi đậu',         example:'Elle a réussi son examen avec mention.', difficulty:3 },
+  { level:'B1', topic:'Giáo dục', word:'Échouer',         meaning:'Thất bại / thi rớt',example:'Il a échoué à l\'examen et doit le repasser.', difficulty:3 },
+  { level:'B1', topic:'Giáo dục', word:'Le diplôme',      meaning:'Bằng cấp',         example:'Elle a obtenu son diplôme en juin.', difficulty:3 },
+  { level:'B1', topic:'Giáo dục', word:'La bourse',       meaning:'Học bổng',         example:'Il a décroché une bourse pour étudier à Lyon.', difficulty:3 },
+
+  // ── Du lịch (bổ sung) ─────────────────────────────────────────
+  { level:'A1', topic:'Du lịch', word:'À gauche',         meaning:'Bên trái / rẽ trái',example:'La boulangerie est à gauche.', difficulty:1 },
+  { level:'A1', topic:'Du lịch', word:'À droite',         meaning:'Bên phải / rẽ phải',example:'Tournez à droite au carrefour.', difficulty:1 },
+  { level:'A1', topic:'Du lịch', word:'Tout droit',       meaning:'Đi thẳng',         example:'Continuez tout droit pendant deux cents mètres.', difficulty:1 },
+  { level:'A2', topic:'Du lịch', word:'Le musée',         meaning:'Bảo tàng',         example:'Le musée du Louvre est le plus visité au monde.', difficulty:2 },
+  { level:'A2', topic:'Du lịch', word:'La banque',        meaning:'Ngân hàng',        example:'Je vais à la banque retirer de l\'argent.', difficulty:2 },
+  { level:'A2', topic:'Du lịch', word:'La pharmacie',     meaning:'Hiệu thuốc',       example:'La pharmacie est reconnaissable à sa croix verte.', difficulty:2 },
+  { level:'A2', topic:'Du lịch', word:'Une chambre simple',meaning:'Phòng đơn',       example:'Je voudrais une chambre simple pour deux nuits.', difficulty:2 },
+  { level:'A2', topic:'Du lịch', word:'Une chambre double',meaning:'Phòng đôi',       example:'Nous réservons une chambre double.', difficulty:2 },
+
+  // ── Tính từ ───────────────────────────────────────────────────
+  { level:'A1', topic:'Tính từ', word:'Grand(e)',         meaning:'To / cao',        example:'Mon frère est très grand.', difficulty:1 },
+  { level:'A1', topic:'Tính từ', word:'Petit(e)',         meaning:'Nhỏ / thấp',      example:'C\'est une petite ville sympa.', difficulty:1 },
+  { level:'A1', topic:'Tính từ', word:'Gros(se)',         meaning:'Béo / to',        example:'Ce chat est très gros.', difficulty:1 },
+  { level:'A1', topic:'Tính từ', word:'Mince',            meaning:'Mảnh khảnh',      example:'Elle est grande et mince.', difficulty:1 },
+  { level:'A1', topic:'Tính từ', word:'Haut(e)',          meaning:'Cao / trên cao',  example:'Le Mont-Blanc est très haut.', difficulty:1 },
+  { level:'A1', topic:'Tính từ', word:'Bas(se)',          meaning:'Thấp',            example:'Le plafond est bas.', difficulty:1 },
+  { level:'A1', topic:'Tính từ', word:'Gentil(le)',       meaning:'Tốt bụng',        example:'Elle est très gentille avec tout le monde.', difficulty:1 },
+  { level:'A1', topic:'Tính từ', word:'Méchant(e)',       meaning:'Độc ác / hung hăng', example:'Il est méchant avec les autres.', difficulty:1 },
+  { level:'A2', topic:'Tính từ', word:'Intelligent(e)',   meaning:'Thông minh',      example:'C\'est un élève très intelligent.', difficulty:2 },
+  { level:'A2', topic:'Tính từ', word:'Bête',             meaning:'Ngốc nghếch / ngu', example:'Ne fais pas le bête !', difficulty:2 },
+  { level:'A2', topic:'Tính từ', word:'Large',            meaning:'Rộng rãi',        example:'La rue est large et bien éclairée.', difficulty:2 },
+  { level:'A2', topic:'Tính từ', word:'Étroit(e)',        meaning:'Chật hẹp / hẹp', example:'Cette robe est trop étroite pour moi.', difficulty:2 },
+  { level:'A2', topic:'Tính từ', word:'Sombre',           meaning:'Tối tăm / u ám', example:'La pièce est sombre, allume la lumière.', difficulty:2 },
+  { level:'A2', topic:'Tính từ', word:'Rapide',           meaning:'Nhanh',           example:'Le TGV est un train très rapide.', difficulty:2 },
+  { level:'A2', topic:'Tính từ', word:'Lent(e)',          meaning:'Chậm',            example:'Internet est lent ce soir.', difficulty:2 },
+  { level:'A2', topic:'Tính từ', word:'Simple',           meaning:'Đơn giản',        example:'La recette est très simple.', difficulty:2 },
+  { level:'A2', topic:'Tính từ', word:'Drôle',            meaning:'Hài hước',        example:'Il raconte des histoires drôles.', difficulty:2 },
+  { level:'A2', topic:'Tính từ', word:'Gai(e)',           meaning:'Vui vẻ',          example:'Elle est toujours gaie et souriante.', difficulty:2 },
+  { level:'A2', topic:'Tính từ', word:'Optimiste',        meaning:'Lạc quan',        example:'Il faut rester optimiste.', difficulty:2 },
+  { level:'A2', topic:'Tính từ', word:'Dynamique',        meaning:'Năng động',       example:'C\'est une équipe dynamique.', difficulty:2 },
+  { level:'B1', topic:'Tính từ', word:'Généreux(se)',     meaning:'Hào phóng',       example:'Il est très généreux envers les autres.', difficulty:3 },
+  { level:'B1', topic:'Tính từ', word:'Mesquin(e)',       meaning:'Hẹp hòi / keo kiệt', example:'C\'est mesquin de refuser d\'aider.', difficulty:3 },
+  { level:'B1', topic:'Tính từ', word:'Complexe',         meaning:'Phức tạp',        example:'Ce problème est vraiment complexe.', difficulty:3 },
+  { level:'B1', topic:'Tính từ', word:'Lâche',             meaning:'Hèn nhát',        example:'C\'est lâche de ne pas défendre ses amis.', difficulty:3 },
+  { level:'B1', topic:'Tính từ', word:'Paresseux(se)',    meaning:'Lười biếng',      example:'Il est trop paresseux pour faire ses devoirs.', difficulty:3 },
+  { level:'B1', topic:'Tính từ', word:'Travailleur(se)',  meaning:'Chăm chỉ',        example:'Elle est très travailleuse.', difficulty:3 },
+  { level:'B1', topic:'Tính từ', word:'Patient(e)',       meaning:'Kiên nhẫn',       example:'Il faut être patient pour apprendre une langue.', difficulty:3 },
+  { level:'B1', topic:'Tính từ', word:'Impatient(e)',     meaning:'Nóng nảy / thiếu kiên nhẫn', example:'Il est impatient d\'avoir les résultats.', difficulty:3 },
+  { level:'B1', topic:'Tính từ', word:'Prudent(e)',       meaning:'Cẩn thận',        example:'Sois prudent sur la route.', difficulty:3 },
 ];
 
 const grammarLessons = [
@@ -206,7 +555,74 @@ const pronunciationTasks = [
   { level:'C1', topic:'Tư duy',    phrase:'Il est essentiel de nuancer son point de vue dans toute argumentation.' }
 ];
 
+const sentenceTasks = [
+  { level:'A1', topic:'Chào hỏi',   vi:'Xin chào!',                                       fr:'Bonjour !' },
+  { level:'A1', topic:'Chào hỏi',   vi:'Tạm biệt!',                                       fr:'Au revoir !' },
+  { level:'A1', topic:'Giới thiệu', vi:'Tôi tên là Nam.',                                 fr:'Je m\'appelle Nam.' },
+  { level:'A1', topic:'Giới thiệu', vi:'Tôi là học sinh.',                                fr:'Je suis étudiant.' },
+  { level:'A1', topic:'Cảm ơn',     vi:'Cảm ơn rất nhiều.',                              fr:'Merci beaucoup.' },
+  { level:'A1', topic:'Số đếm',     vi:'Tôi muốn hai cái.',                               fr:'Je voudrais deux.' },
+  { level:'A2', topic:'Thực phẩm',  vi:'Tôi muốn một tách cà phê.',                      fr:'Je voudrais un café.' },
+  { level:'A2', topic:'Du lịch',    vi:'Nhà ga ở đâu?',                                   fr:'Où est la gare ?' },
+  { level:'A2', topic:'Mua sắm',    vi:'Cái này giá bao nhiêu?',                          fr:'Combien coûte ceci ?' },
+  { level:'A2', topic:'Thành phố',  vi:'Tôi đang tìm một khách sạn.',                    fr:'Je cherche un hôtel.' },
+  { level:'A2', topic:'Gia đình',   vi:'Tôi có một người anh trai.',                      fr:'J\'ai un frère.' },
+  { level:'B1', topic:'Giao tiếp',  vi:'Bạn có thể nói chậm hơn không?',                fr:'Pouvez-vous parler plus lentement ?' },
+  { level:'B1', topic:'Cảm xúc',    vi:'Tôi rất vui được gặp bạn.',                      fr:'Je suis très content de vous rencontrer.' },
+  { level:'B1', topic:'Công việc',  vi:'Tôi đang tìm việc làm.',                          fr:'Je cherche un emploi.' },
+  { level:'B1', topic:'Học tập',    vi:'Tôi học tiếng Pháp mỗi ngày.',                   fr:'J\'apprends le français tous les jours.' },
+  { level:'B2', topic:'Môi trường', vi:'Chúng ta phải bảo vệ môi trường.',               fr:'Nous devons protéger l\'environnement.' },
+  { level:'B2', topic:'Lập luận',   vi:'Tuy nhiên, tôi có ý kiến khác.',                 fr:'Cependant, j\'ai une opinion différente.' },
+  { level:'B2', topic:'Công việc',  vi:'Cuộc họp bị hoãn đến ngày mai.',                 fr:'La réunion est reportée à demain.' },
+  { level:'C1', topic:'Tư duy',     vi:'Điều quan trọng là phải lập luận có chiều sâu.', fr:'Il est essentiel de bien argumenter.' },
+];
+
 const dialogueTasks = [
+  {
+    level:'A1', topic:'Chào hỏi',
+    title: 'Gặp gỡ lần đầu',
+    lines: [
+      { speaker: 'A', fr: 'Bonjour ! Comment tu t\'appelles ?', vi: 'Xin chào! Bạn tên là gì?' },
+      { speaker: 'B', fr: 'Je m\'appelle Marie. Et toi ?', vi: 'Tôi tên là Marie. Còn bạn?' },
+      { speaker: 'A', fr: 'Moi, c\'est Lucas. Enchanté !', vi: 'Tôi là Lucas. Rất vui được gặp bạn!' },
+      { speaker: 'B', fr: 'Enchantée ! Tu es français ?', vi: 'Rất vui được gặp bạn! Bạn là người Pháp à?' },
+      { speaker: 'A', fr: 'Oui, je suis de Paris. Et toi ?', vi: 'Vâng, tôi đến từ Paris. Còn bạn?' },
+      { speaker: 'B', fr: 'Je suis vietnamienne, mais j\'apprends le français.', vi: 'Tôi là người Việt Nam, nhưng tôi đang học tiếng Pháp.' }
+    ]
+  },
+  {
+    level:'A1', topic:'Chào hỏi',
+    title: 'Chào hỏi buổi sáng',
+    lines: [
+      { speaker: 'A', fr: 'Bonjour, comment ça va ?', vi: 'Chào buổi sáng, bạn có khỏe không?' },
+      { speaker: 'B', fr: 'Ça va bien, merci. Et toi ?', vi: 'Tôi khỏe, cảm ơn. Còn bạn?' },
+      { speaker: 'A', fr: 'Très bien, merci. Bonne journée !', vi: 'Rất khỏe, cảm ơn. Chúc bạn một ngày tốt lành!' },
+      { speaker: 'B', fr: 'Merci, toi aussi !', vi: 'Cảm ơn, bạn cũng vậy nhé!' }
+    ]
+  },
+  {
+    level:'A1', topic:'Giới thiệu',
+    title: 'Giới thiệu bản thân',
+    lines: [
+      { speaker: 'Giáo viên', fr: 'Bonjour à tous ! Présentez-vous, s\'il vous plaît.', vi: 'Chào tất cả mọi người! Hãy tự giới thiệu bản thân nhé.' },
+      { speaker: 'Élève', fr: 'Bonjour, je m\'appelle Nam. J\'ai vingt ans.', vi: 'Xin chào, tôi tên là Nam. Tôi hai mươi tuổi.' },
+      { speaker: 'Giáo viên', fr: 'Tu es étudiant ?', vi: 'Bạn là sinh viên à?' },
+      { speaker: 'Élève', fr: 'Oui, je suis étudiant en informatique.', vi: 'Vâng, tôi là sinh viên ngành công nghệ thông tin.' },
+      { speaker: 'Giáo viên', fr: 'Et tu habites où ?', vi: 'Và bạn sống ở đâu?' },
+      { speaker: 'Élève', fr: 'J\'habite à Hanoï, au Vietnam.', vi: 'Tôi sống ở Hà Nội, Việt Nam.' }
+    ]
+  },
+  {
+    level:'A1', topic:'Gia đình',
+    title: 'Nói về gia đình',
+    lines: [
+      { speaker: 'A', fr: 'Tu as des frères et sœurs ?', vi: 'Bạn có anh chị em không?' },
+      { speaker: 'B', fr: 'Oui, j\'ai un frère et une sœur. Et toi ?', vi: 'Có, tôi có một anh trai và một chị gái. Còn bạn?' },
+      { speaker: 'A', fr: 'Moi, je suis fils unique.', vi: 'Tôi là con một.' },
+      { speaker: 'B', fr: 'Tes parents habitent avec toi ?', vi: 'Bố mẹ bạn sống cùng bạn không?' },
+      { speaker: 'A', fr: 'Oui, on habite tous ensemble à Hanoï.', vi: 'Vâng, chúng tôi sống cùng nhau ở Hà Nội.' }
+    ]
+  },
   {
     level:'A1', topic:'Thực phẩm',
     title: 'Quán cà phê',
@@ -214,44 +630,125 @@ const dialogueTasks = [
       { speaker: 'Nhân viên', fr: 'Bonjour, vous désirez ?', vi: 'Xin chào, anh/chị muốn gì?' },
       { speaker: 'Khách', fr: 'Je voudrais un café et un croissant.', vi: 'Tôi muốn một cà phê và một bánh sừng bò.' },
       { speaker: 'Nhân viên', fr: 'Avec plaisir, ce sera tout ?', vi: 'Vâng ạ, còn gì nữa không?' },
-      { speaker: 'Khách', fr: 'Oui, merci.', vi: 'Vâng, cảm ơn.' }
+      { speaker: 'Khách', fr: 'Oui, c\'est combien ?', vi: 'Vâng, tổng cộng bao nhiêu ạ?' },
+      { speaker: 'Nhân viên', fr: 'Ça fait quatre euros cinquante.', vi: 'Tất cả là bốn euro năm mươi xu.' },
+      { speaker: 'Khách', fr: 'Voilà, merci.', vi: 'Của anh/chị đây, cảm ơn.' }
     ]
   },
   {
-    level:'A2', topic:'Ẩm thực',
+    level:'A2', topic:'Mua sắm',
+    title: 'Tại cửa hàng quần áo',
+    lines: [
+      { speaker: 'Vendeur', fr: 'Bonjour, je peux vous aider ?', vi: 'Xin chào, tôi có thể giúp gì cho anh/chị không?' },
+      { speaker: 'Client', fr: 'Oui, je cherche une veste pour l\'hiver.', vi: 'Vâng, tôi đang tìm một chiếc áo khoác cho mùa đông.' },
+      { speaker: 'Vendeur', fr: 'Quelle taille faites-vous ?', vi: 'Anh/chị mặc cỡ bao nhiêu?' },
+      { speaker: 'Client', fr: 'Je fais du M.', vi: 'Tôi mặc cỡ M.' },
+      { speaker: 'Vendeur', fr: 'Voici une veste très tendance. Elle vous plaît ?', vi: 'Đây là một chiếc áo rất thời thượng. Anh/chị thích không?' },
+      { speaker: 'Client', fr: 'Oui, c\'est combien ?', vi: 'Vâng, giá bao nhiêu vậy?' },
+      { speaker: 'Vendeur', fr: 'Elle est à soixante-dix euros.', vi: 'Chiếc này giá bảy mươi euro.' }
+    ]
+  },
+  {
+    level:'A2', topic:'Thực phẩm',
     title: 'Tại nhà hàng',
     lines: [
       { speaker: 'Nhân viên', fr: 'Bonjour, vous avez réservé ?', vi: 'Xin chào, anh/chị đã đặt bàn chưa?' },
       { speaker: 'Khách', fr: 'Oui, au nom de Nam.', vi: 'Có, tên Nam.' },
-      { speaker: 'Nhân viên', fr: 'Suivez-moi, je vous en prie.', vi: 'Mời anh/chị theo tôi.' }
+      { speaker: 'Nhân viên', fr: 'Suivez-moi, je vous en prie.', vi: 'Mời anh/chị theo tôi.' },
+      { speaker: 'Khách', fr: 'Qu\'est-ce que vous recommandez ?', vi: 'Anh/chị có gợi ý món gì không?' },
+      { speaker: 'Nhân viên', fr: 'Je vous recommande le steak avec des frites.', vi: 'Tôi giới thiệu món bít tết với khoai tây chiên.' }
     ]
   },
   {
     level:'A2', topic:'Du lịch',
     title: 'Tại ga tàu',
     lines: [
-      { speaker: 'Khách', fr: 'Le train pour Paris part à quelle heure ?', vi: 'Tàu đi Paris lúc mấy giờ?' },
-      { speaker: 'Nhân viên', fr: 'Il part à quinze heures.', vi: 'Nó đi lúc 3 giờ chiều.' }
+      { speaker: 'Khách', fr: 'Bonjour, je voudrais un billet pour Paris.', vi: 'Xin chào, tôi muốn mua vé đi Paris.' },
+      { speaker: 'Nhân viên', fr: 'Aller simple ou aller-retour ?', vi: 'Vé một chiều hay khứ hồi?' },
+      { speaker: 'Khách', fr: 'Aller-retour, s\'il vous plaît.', vi: 'Khứ hồi, làm ơn.' },
+      { speaker: 'Nhân viên', fr: 'Le train part à quinze heures, quai numéro cinq.', vi: 'Tàu khởi hành lúc 15 giờ, sân ga số năm.' },
+      { speaker: 'Khách', fr: 'Merci. C\'est combien ?', vi: 'Cảm ơn. Giá bao nhiêu?' },
+      { speaker: 'Nhân viên', fr: 'Vingt-cinq euros, s\'il vous plaît.', vi: 'Hai mươi lăm euro, xin cảm ơn.' }
     ]
   },
   {
-    level:'B1', topic:'Công việc',
+    level:'A2', topic:'Chỗ ở',
+    title: 'Tìm phòng thuê',
+    lines: [
+      { speaker: 'Locataire', fr: 'Bonjour, j\'appelle pour l\'appartement à louer.', vi: 'Xin chào, tôi gọi để hỏi về căn hộ cho thuê.' },
+      { speaker: 'Propriétaire', fr: 'Oui, c\'est un deux-pièces au troisième étage.', vi: 'Vâng, đó là căn hộ hai phòng ở tầng ba.' },
+      { speaker: 'Locataire', fr: 'Il y a un ascenseur ?', vi: 'Có thang máy không ạ?' },
+      { speaker: 'Propriétaire', fr: 'Oui, et il y a aussi un parking.', vi: 'Có, và cũng có bãi đỗ xe nữa.' },
+      { speaker: 'Locataire', fr: 'Quel est le loyer mensuel ?', vi: 'Tiền thuê hàng tháng là bao nhiêu?' },
+      { speaker: 'Propriétaire', fr: 'C\'est huit cents euros par mois, charges comprises.', vi: 'Tám trăm euro một tháng, đã bao gồm phí dịch vụ.' }
+    ]
+  },
+  {
+    level:'B1', topic:'Giáo dục',
+    title: 'Trao đổi về học tập',
+    lines: [
+      { speaker: 'A', fr: 'Tu as passé ton examen hier ?', vi: 'Hôm qua bạn đã thi chưa?' },
+      { speaker: 'B', fr: 'Oui, mais je pense que j\'ai raté.', vi: 'Rồi, nhưng tôi nghĩ mình đã trượt rồi.' },
+      { speaker: 'A', fr: 'Pourquoi tu dis ça ?', vi: 'Sao bạn lại nói vậy?' },
+      { speaker: 'B', fr: 'Je n\'avais pas bien préparé la partie grammaire.', vi: 'Tôi không chuẩn bị kỹ phần ngữ pháp.' },
+      { speaker: 'A', fr: 'Courage ! Les résultats ne sont pas encore sortis.', vi: 'Cố lên! Kết quả chưa ra mà.' },
+      { speaker: 'B', fr: 'Tu as raison. Je vais travailler plus dur la prochaine fois.', vi: 'Bạn nói đúng. Lần sau tôi sẽ cố gắng hơn.' }
+    ]
+  },
+  {
+    level:'B1', topic:'Nghề nghiệp',
     title: 'Phỏng vấn xin việc',
     lines: [
       { speaker: 'Giám đốc', fr: 'Pouvez-vous vous présenter ?', vi: 'Bạn có thể tự giới thiệu không?' },
       { speaker: 'Người xin việc', fr: 'Bien sûr. Je m\'appelle Nam, j\'ai cinq ans d\'expérience.', vi: 'Tất nhiên. Tôi là Nam, tôi có 5 năm kinh nghiệm.' },
       { speaker: 'Giám đốc', fr: 'Quelles sont vos qualités principales ?', vi: 'Những ưu điểm chính của bạn là gì?' },
-      { speaker: 'Người xin việc', fr: 'Je suis sérieux, organisé et très motivé.', vi: 'Tôi nghiêm túc, nghiêm ngắn và rất nhiệt tình.' }
+      { speaker: 'Người xin việc', fr: 'Je suis sérieux, organisé et très motivé.', vi: 'Tôi nghiêm túc, có tổ chức và rất nhiệt tình.' },
+      { speaker: 'Giám đốc', fr: 'Quelles sont vos prétentions salariales ?', vi: 'Mức lương kỳ vọng của bạn là bao nhiêu?' },
+      { speaker: 'Người xin việc', fr: 'Je souhaite un salaire autour de deux mille euros.', vi: 'Tôi mong muốn mức lương khoảng hai nghìn euro.' }
     ]
   },
   {
-    level:'B2', topic:'Quan hệ',
+    level:'B1', topic:'Sức khỏe',
+    title: 'Tại phòng khám',
+    lines: [
+      { speaker: 'Médecin', fr: 'Bonjour, qu\'est-ce qui vous amène ?', vi: 'Xin chào, anh/chị đến vì lý do gì?' },
+      { speaker: 'Patient', fr: 'J\'ai mal à la gorge depuis trois jours.', vi: 'Tôi đau họng được ba ngày rồi.' },
+      { speaker: 'Médecin', fr: 'Vous avez de la fièvre ?', vi: 'Anh/chị có bị sốt không?' },
+      { speaker: 'Patient', fr: 'Oui, trente-huit degrés ce matin.', vi: 'Có, sáng nay ba mươi tám độ.' },
+      { speaker: 'Médecin', fr: 'Je vais vous prescrire des antibiotiques.', vi: 'Tôi sẽ kê đơn thuốc kháng sinh cho anh/chị.' },
+      { speaker: 'Patient', fr: 'Merci docteur. Je dois revenir quand ?', vi: 'Cảm ơn bác sĩ. Tôi cần quay lại khi nào?' }
+    ]
+  },
+  {
+    level:'B1', topic:'Công việc',
+    title: 'Họp nhóm tại văn phòng',
+    lines: [
+      { speaker: 'Chef', fr: 'On va commencer la réunion. Où en est le projet ?', vi: 'Chúng ta bắt đầu họp thôi. Dự án đang tiến triển thế nào?' },
+      { speaker: 'Employé', fr: 'Nous avons terminé la première phase.', vi: 'Chúng tôi đã hoàn thành giai đoạn đầu tiên.' },
+      { speaker: 'Chef', fr: 'Bien. Quand est-ce que la deuxième phase sera prête ?', vi: 'Tốt. Khi nào giai đoạn hai sẽ sẵn sàng?' },
+      { speaker: 'Employé', fr: 'Nous estimons que ce sera fini vendredi prochain.', vi: 'Chúng tôi dự kiến sẽ xong vào thứ Sáu tuần tới.' }
+    ]
+  },
+  {
+    level:'B2', topic:'Tự nhiên',
     title: 'Thảo luận về môi trường',
     lines: [
       { speaker: 'A', fr: 'Que penses-tu du réchauffement climatique ?', vi: 'Bạn nghĩ gì về biến đổi khí hậu?' },
       { speaker: 'B', fr: 'C\'est un problème très grave qui nécessite une action immédiate.', vi: 'Đó là vấn đề rất nghiêm trọng cần hành động ngay.' },
       { speaker: 'A', fr: 'Quelles solutions proposes-tu ?', vi: 'Bạn đề xuất giải pháp nào?' },
-      { speaker: 'B', fr: 'Il faut utiliser les énergies renouvelables et recycler davantage.', vi: 'Cần sử dụng năng lượng tái tạo và tái chế nhiều hơn.' }
+      { speaker: 'B', fr: 'Il faut utiliser les énergies renouvelables et recycler davantage.', vi: 'Cần sử dụng năng lượng tái tạo và tái chế nhiều hơn.' },
+      { speaker: 'A', fr: 'Je suis d\'accord. Chacun doit faire sa part.', vi: 'Tôi đồng ý. Mỗi người phải góp phần của mình.' }
+    ]
+  },
+  {
+    level:'B2', topic:'Công nghệ',
+    title: 'Trí tuệ nhân tạo và xã hội',
+    lines: [
+      { speaker: 'A', fr: 'L\'intelligence artificielle va-t-elle remplacer les humains ?', vi: 'Trí tuệ nhân tạo có thay thế con người không?' },
+      { speaker: 'B', fr: 'Pas entièrement, mais certains métiers vont disparaître.', vi: 'Không hoàn toàn, nhưng một số ngành nghề sẽ biến mất.' },
+      { speaker: 'A', fr: 'Quels métiers sont les plus menacés selon toi ?', vi: 'Theo bạn, ngành nào bị đe dọa nhiều nhất?' },
+      { speaker: 'B', fr: 'Les métiers répétitifs comme la comptabilité ou la saisie de données.', vi: 'Những công việc lặp đi lặp lại như kế toán hay nhập liệu.' },
+      { speaker: 'A', fr: 'Il faut donc se former aux nouvelles technologies.', vi: 'Vậy thì cần phải học các công nghệ mới.' }
     ]
   }
 ];
@@ -305,6 +802,13 @@ let activeListening = 0;
 let activeSpeaking = 0;
 let activePronunciation = 0;
 let activeDialogue = 0;
+let activeSentence = 0;
+let wordMode = 'sentence';
+let sentenceBankWords = [];
+let sentenceAnswerWords = [];
+let matchPairs = [];
+let matchSelected = null;
+let matchSolved = 0;
 let quizState = { current: 0, score: 0, total: 0, active: false };
 let selectedLevel = 'all';
 let selectedTopic = 'all';
@@ -490,9 +994,11 @@ function renderEvaluation(period) {
     const lsPct = lsTotal > 0 ? Math.round(lsCorrect/lsTotal*100) : 0;
     const grade = cls => cls >= 70 ? 'green' : cls >= 40 ? 'ok' : 'accent';
 
+    const wordCount = d.wordCount || 0;
     el.innerHTML = `<div class="eval-rows">
       ${row('🎯','Quiz', qTotal>0?`${qCorrect}/${qTotal} (${qPct}%)`:'Chưa làm', qPct, grade(qPct))}
       ${row('📝','Dịch câu', practice>0?`${practice} câu đúng`:'Chưa làm', Math.min(100,practice*5), 'green')}
+      ${row('🧩','Ghép từ', wordCount>0?`${wordCount} lần đúng`:'Chưa chơi', Math.min(100,wordCount*10), 'green')}
       ${row('🎤','Luyện nói', spAttempt>0?`${spCorrect}/${spAttempt} lần tốt (${spPct}%)`:'Chưa luyện', spPct, grade(spPct))}
       ${row('🔊','Phát âm', prAttempt>0?`${prCorrect}/${prAttempt} lần đúng (${prPct}%)`:'Chưa luyện', prPct, grade(prPct))}
       ${row('👂','Nghe hiểu', lsTotal>0?`${lsCorrect}/${lsTotal} câu đúng (${lsPct}%)`:'Chưa làm', lsPct, grade(lsPct))}
@@ -513,7 +1019,7 @@ function renderEvaluation(period) {
     entries.push({ ...entry, label });
   }
   function dayTotal(e) {
-    return (e.quizTotal||0) + (e.practiceCount||0) + (e.speakingAttempt||0) + (e.pronunciationAttempt||0) + (e.listeningCorrect||0) + (e.listeningWrong||0) + (e.dialogueCount||0);
+    return (e.quizTotal||0) + (e.practiceCount||0) + (e.speakingAttempt||0) + (e.pronunciationAttempt||0) + (e.listeningCorrect||0) + (e.listeningWrong||0) + (e.dialogueCount||0) + (e.wordCount||0);
   }
   function dayAccuracy(e) {
     const correct = (e.quizCorrect||0) + (e.practiceCount||0) + (e.speakingCorrect||0) + (e.pronunciationCorrect||0) + (e.listeningCorrect||0);
@@ -690,7 +1196,18 @@ function renderPronunciation() {
 }
 
 function renderDialogue() {
-  const tasks = getFilteredPracticeTasks(dialogueTasks);
+  let tasks = dialogueTasks.filter(t => {
+    const matchLevel = practiceFilterLevel === 'all' || t.level === practiceFilterLevel;
+    const matchTopic = practiceFilterTopic === 'all' || t.topic === practiceFilterTopic;
+    return matchLevel && matchTopic;
+  });
+  if (practiceFilterOrder === 'hard') tasks = [...tasks].reverse();
+  if (!tasks.length) {
+    dialogueTitle.textContent = 'Không tìm thấy hội thoại';
+    if (dialogueMeta) dialogueMeta.textContent = '';
+    dialogueText.innerHTML = '<p style="text-align:center;padding:24px 0;color:var(--muted)">Chưa có hội thoại nào cho bộ lọc này.<br>Thử chọn chủ đề khác.</p>';
+    return;
+  }
   activeDialogue = activeDialogue % tasks.length;
   const task = tasks[activeDialogue];
   dialogueTitle.textContent = task.title;
@@ -708,11 +1225,16 @@ function switchPracticeTab(tab) {
     btn.classList.toggle('active', btn.dataset.tab === tab);
   });
   const listeningPanel = document.getElementById('listeningPanel');
+  const wordPanel = document.getElementById('wordPanel');
   translatePanel.style.display = tab === 'translate' ? 'block' : 'none';
   speakingPanel.style.display = tab === 'speaking' ? 'block' : 'none';
   pronunciationPanel.style.display = tab === 'pronunciation' ? 'block' : 'none';
   dialoguePanel.style.display = tab === 'dialogue' ? 'block' : 'none';
   if (listeningPanel) listeningPanel.style.display = tab === 'listening' ? 'block' : 'none';
+  if (wordPanel) {
+    wordPanel.style.display = tab === 'word' ? 'block' : 'none';
+    if (tab === 'word') renderWordGame();
+  }
 }
 
 function renderListening() {
@@ -747,6 +1269,184 @@ function renderListening() {
         }
       });
     });
+  }
+}
+
+function getFilteredSentenceTasks() {
+  return sentenceTasks.filter(t => {
+    const matchLevel = practiceFilterLevel === 'all' || t.level === practiceFilterLevel;
+    const matchTopic = practiceFilterTopic === 'all' || t.topic === practiceFilterTopic;
+    return matchLevel && matchTopic;
+  });
+}
+
+function renderSentenceBuilder() {
+  const tasks = getFilteredSentenceTasks();
+  const answerEl = document.getElementById('sentenceAnswerArea');
+  const bankEl = document.getElementById('wordBankArea');
+  const promptEl = document.getElementById('sentencePrompt');
+  const metaEl = document.getElementById('sentenceMeta');
+  const feedbackEl = document.getElementById('sentenceFeedback');
+  if (!answerEl || !bankEl) return;
+  if (!tasks.length) {
+    promptEl.textContent = 'Không có câu nào phù hợp với bộ lọc.';
+    bankEl.innerHTML = '';
+    answerEl.innerHTML = '<span class="answer-hint">Hãy thay đổi bộ lọc</span>';
+    return;
+  }
+  const task = tasks[activeSentence % tasks.length];
+  if (metaEl) metaEl.textContent = `${task.level} · ${task.topic}`;
+  if (promptEl) promptEl.textContent = task.vi;
+  if (feedbackEl) feedbackEl.textContent = '';
+
+  const words = task.fr.replace(/['']/g, "'").split(' ').filter(Boolean);
+  const withDistractors = [...words];
+  const extras = vocabularies
+    .filter(v => !words.includes(v.word))
+    .slice(0, Math.min(3, Math.floor(words.length / 2)));
+  extras.forEach(v => withDistractors.push(v.word));
+  sentenceBankWords = shuffleArray(withDistractors.map((w, i) => ({ id: i, word: w, used: false })));
+  sentenceAnswerWords = [];
+
+  renderWordChips();
+}
+
+function renderWordChips() {
+  const answerEl = document.getElementById('sentenceAnswerArea');
+  const bankEl = document.getElementById('wordBankArea');
+  if (!answerEl || !bankEl) return;
+
+  if (sentenceAnswerWords.length === 0) {
+    answerEl.innerHTML = '<span class="answer-hint">Nhấn các từ bên dưới để ghép câu</span>';
+  } else {
+    answerEl.innerHTML = sentenceAnswerWords.map(w =>
+      `<button class="word-chip answer-chip" data-chip-id="${w.id}">${w.word}</button>`
+    ).join('');
+  }
+
+  bankEl.innerHTML = sentenceBankWords
+    .filter(w => !w.used)
+    .map(w => `<button class="word-chip bank-chip" data-chip-id="${w.id}">${w.word}</button>`)
+    .join('');
+}
+
+function checkSentenceAnswer() {
+  const tasks = getFilteredSentenceTasks();
+  const task = tasks[activeSentence % tasks.length];
+  const feedbackEl = document.getElementById('sentenceFeedback');
+  if (!feedbackEl) return;
+  const given = sentenceAnswerWords.map(w => w.word).join(' ').trim().toLowerCase().replace(/[!?.,]/g, '');
+  const expected = task.fr.trim().toLowerCase().replace(/[!?.,]/g, '');
+  if (given === expected) {
+    feedbackEl.textContent = '🎉 Chính xác!';
+    feedbackEl.style.color = '#22c55e';
+    recordDailyStat('wordCount');
+    maybeUpdateStreak();
+    playQuizSound(true);
+  } else if (given.length === 0) {
+    feedbackEl.textContent = 'Hãy ghép câu trước khi kiểm tra.';
+    feedbackEl.style.color = '#f59e0b';
+  } else {
+    feedbackEl.textContent = `Chưa đúng. Đáp án: ${task.fr}`;
+    feedbackEl.style.color = '#ef4444';
+    playQuizSound(false);
+  }
+}
+
+function renderMatchGame() {
+  const gridEl = document.getElementById('matchGrid');
+  const scoreEl = document.getElementById('matchScore');
+  const feedbackEl = document.getElementById('matchFeedback');
+  if (!gridEl) return;
+
+  const pool = vocabularies.filter(v => {
+    const matchLevel = practiceFilterLevel === 'all' || v.level === practiceFilterLevel;
+    const matchTopic = practiceFilterTopic === 'all' || v.topic === practiceFilterTopic;
+    return matchLevel && matchTopic;
+  });
+  const picked = shuffleArray(pool).slice(0, 6);
+  matchPairs = picked.map((v, i) => ({
+    id: i, fr: v.word, vi: v.meaning, matched: false
+  }));
+  matchSelected = null;
+  matchSolved = 0;
+  if (scoreEl) scoreEl.textContent = `0 / ${matchPairs.length} cặp`;
+  if (feedbackEl) feedbackEl.textContent = '';
+
+  renderMatchGrid();
+}
+
+function renderMatchGrid() {
+  const gridEl = document.getElementById('matchGrid');
+  if (!gridEl) return;
+  const leftItems = shuffleArray(matchPairs.filter(p => !p.matched).map(p => ({ ...p, side: 'fr' })));
+  const rightItems = shuffleArray(matchPairs.filter(p => !p.matched).map(p => ({ ...p, side: 'vi' })));
+
+  gridEl.innerHTML = '';
+  const maxLen = Math.max(leftItems.length, rightItems.length);
+  for (let i = 0; i < maxLen; i++) {
+    const l = leftItems[i];
+    const r = rightItems[i];
+    if (l) {
+      const isSelected = matchSelected && matchSelected.side === 'fr' && matchSelected.id === l.id;
+      gridEl.insertAdjacentHTML('beforeend',
+        `<button class="match-chip fr-chip${isSelected ? ' selected' : ''}" data-match-id="${l.id}" data-match-side="fr">${l.fr}</button>`);
+    } else {
+      gridEl.insertAdjacentHTML('beforeend', '<div></div>');
+    }
+    if (r) {
+      const isSelected = matchSelected && matchSelected.side === 'vi' && matchSelected.id === r.id;
+      gridEl.insertAdjacentHTML('beforeend',
+        `<button class="match-chip vi-chip${isSelected ? ' selected' : ''}" data-match-id="${r.id}" data-match-side="vi">${r.vi}</button>`);
+    } else {
+      gridEl.insertAdjacentHTML('beforeend', '<div></div>');
+    }
+  }
+}
+
+function handleMatchClick(id, side) {
+  const feedbackEl = document.getElementById('matchFeedback');
+  const scoreEl = document.getElementById('matchScore');
+  if (!matchSelected) {
+    matchSelected = { id, side };
+    renderMatchGrid();
+    return;
+  }
+  if (matchSelected.side === side) {
+    matchSelected = { id, side };
+    renderMatchGrid();
+    return;
+  }
+  const frId = side === 'vi' ? matchSelected.id : id;
+  const viId = side === 'fr' ? matchSelected.id : id;
+  const correct = frId === viId;
+  matchSelected = null;
+  if (correct) {
+    matchPairs.find(p => p.id === frId).matched = true;
+    matchSolved++;
+    if (scoreEl) scoreEl.textContent = `${matchSolved} / ${matchPairs.length} cặp`;
+    if (feedbackEl) { feedbackEl.textContent = '✅ Đúng!'; feedbackEl.style.color = '#22c55e'; }
+    playQuizSound(true);
+    recordDailyStat('wordCount');
+    if (matchSolved === matchPairs.length) {
+      if (feedbackEl) { feedbackEl.textContent = '🎉 Hoàn thành tất cả!'; feedbackEl.style.color = '#22c55e'; }
+      maybeUpdateStreak();
+    }
+    renderMatchGrid();
+  } else {
+    if (feedbackEl) { feedbackEl.textContent = '❌ Không khớp. Thử lại!'; feedbackEl.style.color = '#ef4444'; }
+    playQuizSound(false);
+    const wrongChips = document.querySelectorAll('.match-chip.selected');
+    wrongChips.forEach(c => { c.classList.add('wrong'); setTimeout(() => c.classList.remove('wrong'), 600); });
+    renderMatchGrid();
+  }
+}
+
+function renderWordGame() {
+  if (wordMode === 'sentence') {
+    renderSentenceBuilder();
+  } else {
+    renderMatchGame();
   }
 }
 
@@ -1692,9 +2392,70 @@ toggleDialogueTranslation.addEventListener('click', () => {
 });
 
 nextDialogue.addEventListener('click', () => {
-  activeDialogue = (activeDialogue + 1) % getFilteredPracticeTasks(dialogueTasks).length;
-  recordDailyStat('dialogueCount');
+  const filteredDialogue = dialogueTasks.filter(t => {
+    const matchLevel = practiceFilterLevel === 'all' || t.level === practiceFilterLevel;
+    const matchTopic = practiceFilterTopic === 'all' || t.topic === practiceFilterTopic;
+    return matchLevel && matchTopic;
+  });
+  if (filteredDialogue.length) {
+    activeDialogue = (activeDialogue + 1) % filteredDialogue.length;
+    recordDailyStat('dialogueCount');
+  }
   renderDialogue();
+});
+
+document.getElementById('checkSentence')?.addEventListener('click', checkSentenceAnswer);
+
+document.getElementById('clearSentence')?.addEventListener('click', () => {
+  sentenceBankWords.forEach(w => { w.used = false; });
+  sentenceAnswerWords = [];
+  document.getElementById('sentenceFeedback').textContent = '';
+  renderWordChips();
+});
+
+document.getElementById('nextSentence')?.addEventListener('click', () => {
+  activeSentence = (activeSentence + 1) % Math.max(1, getFilteredSentenceTasks().length);
+  renderSentenceBuilder();
+});
+
+document.getElementById('wordBankArea')?.addEventListener('click', event => {
+  const btn = event.target.closest('.bank-chip');
+  if (!btn) return;
+  const id = parseInt(btn.dataset.chipId);
+  const chip = sentenceBankWords.find(w => w.id === id);
+  if (!chip || chip.used) return;
+  chip.used = true;
+  sentenceAnswerWords.push(chip);
+  renderWordChips();
+});
+
+document.getElementById('sentenceAnswerArea')?.addEventListener('click', event => {
+  const btn = event.target.closest('.answer-chip');
+  if (!btn) return;
+  const id = parseInt(btn.dataset.chipId);
+  sentenceAnswerWords = sentenceAnswerWords.filter(w => w.id !== id);
+  const chip = sentenceBankWords.find(w => w.id === id);
+  if (chip) chip.used = false;
+  renderWordChips();
+});
+
+document.getElementById('matchGrid')?.addEventListener('click', event => {
+  const btn = event.target.closest('.match-chip');
+  if (!btn) return;
+  handleMatchClick(parseInt(btn.dataset.matchId), btn.dataset.matchSide);
+});
+
+document.getElementById('newMatchGame')?.addEventListener('click', renderMatchGame);
+
+document.querySelectorAll('.word-mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.word-mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    wordMode = btn.dataset.wordMode;
+    document.getElementById('sentenceBuilderPanel').style.display = wordMode === 'sentence' ? 'block' : 'none';
+    document.getElementById('matchGamePanel').style.display = wordMode === 'match' ? 'block' : 'none';
+    renderWordGame();
+  });
 });
 
 vocabList.addEventListener('click', event => {
@@ -1972,32 +2733,32 @@ if (practiceLevelRow) {
     practiceLevelRow.querySelectorAll('[data-practice-level]').forEach(btn =>
       btn.classList.toggle('active', btn.dataset.practiceLevel === practiceFilterLevel)
     );
-    activePractice = 0; activeSpeaking = 0; activePronunciation = 0; activeDialogue = 0; activeListening = 0;
-    renderPractice(); renderSpeaking(); renderPronunciation(); renderDialogue(); renderListening();
+    activePractice = 0; activeSpeaking = 0; activePronunciation = 0; activeDialogue = 0; activeListening = 0; activeSentence = 0;
+    renderPractice(); renderSpeaking(); renderPronunciation(); renderDialogue(); renderListening(); renderWordGame();
   });
 }
 
 if (practiceLevelFilter) {
   practiceLevelFilter.addEventListener('change', () => {
     practiceFilterLevel = practiceLevelFilter.value;
-    activePractice = 0; activeSpeaking = 0; activePronunciation = 0; activeDialogue = 0;
-    renderPractice(); renderSpeaking(); renderPronunciation(); renderDialogue();
+    activePractice = 0; activeSpeaking = 0; activePronunciation = 0; activeDialogue = 0; activeSentence = 0;
+    renderPractice(); renderSpeaking(); renderPronunciation(); renderDialogue(); renderWordGame();
   });
 }
 
 if (practiceTopicFilter) {
   practiceTopicFilter.addEventListener('change', () => {
     practiceFilterTopic = practiceTopicFilter.value;
-    activePractice = 0; activeSpeaking = 0; activePronunciation = 0; activeDialogue = 0;
-    renderPractice(); renderSpeaking(); renderPronunciation(); renderDialogue();
+    activePractice = 0; activeSpeaking = 0; activePronunciation = 0; activeDialogue = 0; activeSentence = 0;
+    renderPractice(); renderSpeaking(); renderPronunciation(); renderDialogue(); renderWordGame();
   });
 }
 
 if (practiceOrderFilter) {
   practiceOrderFilter.addEventListener('change', () => {
     practiceFilterOrder = practiceOrderFilter.value;
-    activePractice = 0; activeSpeaking = 0; activePronunciation = 0; activeDialogue = 0;
-    renderPractice(); renderSpeaking(); renderPronunciation(); renderDialogue();
+    activePractice = 0; activeSpeaking = 0; activePronunciation = 0; activeDialogue = 0; activeSentence = 0;
+    renderPractice(); renderSpeaking(); renderPronunciation(); renderDialogue(); renderWordGame();
   });
 }
 

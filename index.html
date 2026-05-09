@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>App Học Tiếng Pháp</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext x='0' y='14' font-size='14'%3EF%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo">Bonjour</div>
+        <div>
+          <h1>FrenchCoach</h1>
+          <p>Học tiếng Pháp mỗi ngày</p>
+        </div>
+      </div>
+      <nav class="menu">
+        <button class="menu-item active" data-section="dashboard">Tổng quan</button>
+        <button class="menu-item" data-section="vocabulary">Từ vựng</button>
+        <button class="menu-item" data-section="grammar">Ngữ pháp</button>
+        <button class="menu-item" data-section="practice">Luyện tập</button>
+        <button class="menu-item" data-section="quiz">Quiz</button>
+        <button class="menu-item" data-section="roadmap">Lộ trình</button>
+        <button class="menu-item" data-section="settings">Cài đặt</button>
+      </nav>
+      <div class="sidebar-footer">
+        <button id="themeToggle" class="pill">Chuyển chế độ</button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Ứng dụng học tiếng Pháp</p>
+          <h2 id="currentSectionTitle">Tổng quan</h2>
+        </div>
+        <div class="profile-card">
+          <span>Xin chào, Học viên!</span>
+          <strong id="streakCounter">Chuỗi ngày: 0</strong>
+        </div>
+      </header>
+
+      <section id="dashboard" class="section active-section">
+        <div class="grid-2">
+          <article class="card welcome-card">
+            <div>
+              <p class="eyebrow">Bắt đầu ngay</p>
+              <h3>Học tiếng Pháp dễ dàng mỗi ngày</h3>
+              <p>Ôn từ vựng, nắm ngữ pháp, luyện nói và chinh phục quiz.</p>
+            </div>
+            <img src="https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=500&q=60" alt="French learning" />
+          </article>
+
+          <div class="stats-grid">
+            <article class="stat-card">
+              <span>Từ đã học</span>
+              <strong id="wordsLearned">0</strong>
+            </article>
+            <article class="stat-card">
+              <span>Bài ngữ pháp</span>
+              <strong id="grammarRead">0</strong>
+            </article>
+            <article class="stat-card">
+              <span>Điểm quiz</span>
+              <strong id="quizScore">0</strong>
+            </article>
+            <article class="stat-card">
+              <span>Yêu thích</span>
+              <strong id="favoriteCount">0</strong>
+            </article>
+          </div>
+        </div>
+
+        <article class="card history-card">
+          <div>
+            <p class="eyebrow">Hoạt động gần đây</p>
+            <ul id="activityHistory" class="history-list"></ul>
+          </div>
+        </article>
+
+        <article class="card eval-card">
+          <div class="eval-header">
+            <p class="eyebrow">Đánh giá học tập</p>
+            <div class="eval-tabs">
+              <button class="pill eval-tab active" data-period="daily">Hôm nay</button>
+              <button class="pill eval-tab" data-period="weekly">Tuần này</button>
+              <button class="pill eval-tab" data-period="monthly">Tháng này</button>
+            </div>
+          </div>
+          <div id="evalContent" class="eval-content"></div>
+        </article>
+
+        <div class="grid-3 cards-preview">
+          <article class="small-card">
+            <h4>Chủ đề phổ biến</h4>
+            <p>Giới thiệu bản thân, mua sắm, du lịch, gia đình.</p>
+          </article>
+          <article class="small-card">
+            <h4>Luyện phát âm</h4>
+            <p>Nghe và đọc đúng từ Pháp từng câu.</p>
+          </article>
+          <article class="small-card">
+            <h4>Thử thách ngày</h4>
+            <p id="dashboardChallenge">Hoàn thành 1 câu dịch/trò chơi để ghi nhận chuỗi ngày.</p>
+            <button id="refreshChallenge" class="pill secondary">Thử thách mới</button>
+            <button id="completeDailyGoal" class="pill secondary">Đánh dấu hoàn thành hôm nay</button>
+            <p id="dailyGoalStatus" class="daily-goal-status">Hôm nay bạn chưa hoàn thành mục tiêu.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="vocabulary" class="section">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Từ vựng</p>
+            <h3>Học từ mới bằng flashcard</h3>
+          </div>
+          <button id="newFlashcard" class="pill">Tạo flashcard mới</button>
+        </div>
+        <p id="vocabResultSummary" class="vocab-result-summary">Đang tải từ vựng...</p>
+        <div class="search-bar">
+          <input id="vocabSearch" type="search" placeholder="Tìm từ, ví dụ hoặc chủ đề..." />
+          <button id="favoriteFilter" class="pill secondary">Chỉ yêu thích</button>
+          <button id="clearSearch" class="pill secondary">Xóa</button>
+        </div>
+        <div class="levels-row">
+          <button class="pill level-button active" data-level="all">Tất cả</button>
+          <button class="pill level-button" data-level="A1">A1</button>
+          <button class="pill level-button" data-level="A2">A2</button>
+          <button class="pill level-button" data-level="B1">B1</button>
+          <button class="pill level-button" data-level="B2">B2</button>
+          <button class="pill level-button" data-level="C1">C1</button>
+          <button class="pill level-button" data-level="C2">C2</button>
+        </div>
+        <div class="topics-row" id="topicButtons"></div>
+
+        <div class="flashcard-scene" id="flashcardScene" title="Nhấn để lật thẻ">
+          <div class="flashcard-card card" id="flashcardInner">
+            <div class="flashcard-face flashcard-front">
+              <span class="flashcard-label">Từ tiếng Pháp</span>
+              <h2 id="flashcardWord">Bonjour</h2>
+            </div>
+            <div class="flashcard-face flashcard-back">
+              <span class="flashcard-label">Nghĩa tiếng Việt</span>
+              <p id="flashcardDefinition" class="flashcard-meaning">Xin chào</p>
+            </div>
+          </div>
+          <div class="flashcard-actions">
+            <button id="playPronunciation" class="pill">Nghe</button>
+            <button id="showExample" class="pill secondary">Xem ví dụ</button>
+          </div>
+        </div>
+
+        <div class="card-grid" id="vocabList"></div>
+        <div class="list-actions">
+          <button id="loadMoreVocab" class="pill secondary">Xem thêm</button>
+        </div>
+      </section>
+
+      <section id="grammar" class="section">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Ngữ pháp</p>
+            <h3>Hiểu cấu trúc và cách dùng</h3>
+          </div>
+        </div>
+        <div class="search-bar">
+          <input id="grammarSearch" type="search" placeholder="Tìm ngữ pháp..." />
+          <select id="grammarLevelFilter" class="grammar-level-select">
+            <option value="all">Tất cả cấp độ</option>
+            <option value="A1">A1</option>
+            <option value="A2">A2</option>
+            <option value="B1">B1</option>
+            <option value="B2">B2</option>
+            <option value="C1">C1</option>
+          </select>
+        </div>
+        <div class="card-grid" id="grammarList"></div>
+      </section>
+
+      <section id="roadmap" class="section">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Lộ trình</p>
+            <h3>Xây nền tảng và tiến bộ từng bước</h3>
+          </div>
+          <button id="resetRoadmap" class="pill secondary">Đặt lại tiến độ</button>
+        </div>
+        <div class="card-grid roadmap-grid" id="roadmapList"></div>
+      </section>
+
+      <section id="practice" class="section">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Luyện tập</p>
+            <h3>Viết, nói, phát âm và hội thoại</h3>
+          </div>
+        </div>
+        <div class="practice-tabs">
+          <button class="pill practice-tab active" data-tab="translate">Dịch câu</button>
+          <button class="pill practice-tab" data-tab="speaking">Luyện nói</button>
+          <button class="pill practice-tab" data-tab="pronunciation">Phát âm</button>
+          <button class="pill practice-tab" data-tab="dialogue">Hội thoại</button>
+          <button class="pill practice-tab" data-tab="listening">Nghe hiểu</button>
+        </div>
+
+        <div class="levels-row" id="practiceLevelRow">
+          <button class="pill level-button active" data-practice-level="all">Tất cả</button>
+          <button class="pill level-button" data-practice-level="A1">A1</button>
+          <button class="pill level-button" data-practice-level="A2">A2</button>
+          <button class="pill level-button" data-practice-level="B1">B1</button>
+          <button class="pill level-button" data-practice-level="B2">B2</button>
+          <button class="pill level-button" data-practice-level="C1">C1</button>
+          <button class="pill level-button" data-practice-level="C2">C2</button>
+        </div>
+
+        <div class="practice-filters">
+          <div class="filter-group">
+            <label for="practiceTopicFilter">Chủ đề</label>
+            <select id="practiceTopicFilter"></select>
+          </div>
+          <div class="filter-group">
+            <label for="practiceOrderFilter">Thứ tự</label>
+            <select id="practiceOrderFilter">
+              <option value="easy">Dễ → Khó</option>
+              <option value="hard">Khó → Dễ</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="translatePanel" class="practice-panel">
+          <article class="card practice-card">
+            <div>
+              <h4>Chuyển câu sau sang tiếng Pháp</h4>
+              <p id="practiceMeta" class="task-meta"></p>
+              <p id="practicePrompt">Tôi muốn cà phê.</p>
+              <textarea id="practiceAnswer" placeholder="Viết câu tiếng Pháp..." rows="4"></textarea>
+              <div class="practice-buttons">
+                <button id="checkAnswer" class="pill">Kiểm tra</button>
+                <button id="nextPrompt" class="pill secondary">Câu khác</button>
+              </div>
+              <p id="practiceFeedback" class="feedback"></p>
+            </div>
+          </article>
+        </div>
+
+        <div id="speakingPanel" class="practice-panel" style="display:none;">
+          <article class="card practice-card">
+            <div>
+              <h4>Luyện nói</h4>
+              <p id="speakingMeta" class="task-meta"></p>
+              <p id="speakingInstructions">Nhấn nút và nói theo câu tiếng Pháp.</p>
+              <p id="speakingPrompt">Je parle de ma journée.</p>
+              <div class="practice-buttons">
+                <button id="startSpeaking" class="pill">Bắt đầu nói</button>
+                <button id="nextSpeaking" class="pill secondary">Câu khác</button>
+              </div>
+              <p id="speakingRecognized" class="recognized-text"></p>
+              <p id="speakingFeedback" class="feedback"></p>
+            </div>
+          </article>
+        </div>
+
+        <div id="pronunciationPanel" class="practice-panel" style="display:none;">
+          <article class="card practice-card">
+            <div>
+              <h4>Phát âm chính xác</h4>
+              <p id="pronunciationMeta" class="task-meta"></p>
+              <p>Nghe mẫu, nói theo và nhận phản hồi phát âm.</p>
+              <p id="pronunciationPrompt">Je voudrais un café, s'il vous plaît.</p>
+              <div class="practice-buttons">
+                <button id="playPronunciationPhrase" class="pill">Nghe mẫu</button>
+                <button id="startPronunciation" class="pill secondary">Bắt đầu phát âm</button>
+                <button id="nextPronunciation" class="pill secondary">Câu khác</button>
+              </div>
+              <p id="pronunciationRecognized" class="recognized-text"></p>
+              <p id="pronunciationFeedback" class="feedback"></p>
+            </div>
+          </article>
+        </div>
+
+        <div id="listeningPanel" class="practice-panel" style="display:none;">
+          <article class="card practice-card">
+            <div>
+              <h4>Nghe và chọn nghĩa đúng</h4>
+              <p id="listeningMeta" class="task-meta"></p>
+              <div class="practice-buttons">
+                <button id="playListeningSentence" class="pill">🔊 Nghe câu</button>
+                <button id="nextListening" class="pill secondary">Câu khác</button>
+              </div>
+              <div id="listeningAnswers" class="answer-grid"></div>
+              <p id="listeningFeedback" class="feedback"></p>
+            </div>
+          </article>
+        </div>
+
+        <div id="dialoguePanel" class="practice-panel" style="display:none;">
+          <article class="card practice-card">
+            <div>
+              <h4>Hội thoại thực tế</h4>
+              <p id="dialogueMeta" class="task-meta"></p>
+              <p>Đọc hội thoại, nghe và xem dịch nghĩa từng câu.</p>
+              <div id="dialogueContent" class="dialogue-card">
+                <p id="dialogueTitle"><strong>Quán cà phê</strong></p>
+                <div id="dialogueText"></div>
+                <div class="dialogue-actions">
+                  <button id="toggleDialogueTranslation" class="pill secondary">Hiển thị / Ẩn dịch</button>
+                  <button id="speakDialogueLine" class="pill secondary">Nghe hội thoại</button>
+                </div>
+              </div>
+              <div class="practice-buttons">
+                <button id="nextDialogue" class="pill">Hội thoại khác</button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="quiz" class="section">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Quiz</p>
+            <h3>Kiểm tra trình độ nhanh</h3>
+          </div>
+          <button id="startQuiz" class="pill">▶ Bắt đầu</button>
+        </div>
+
+        <div class="levels-row" id="quizLevelRow">
+          <button class="pill level-button active" data-quiz-level="all">Tất cả</button>
+          <button class="pill level-button" data-quiz-level="A1">A1</button>
+          <button class="pill level-button" data-quiz-level="A2">A2</button>
+          <button class="pill level-button" data-quiz-level="B1">B1</button>
+          <button class="pill level-button" data-quiz-level="B2">B2</button>
+          <button class="pill level-button" data-quiz-level="C1">C1</button>
+          <button class="pill level-button" data-quiz-level="C2">C2</button>
+        </div>
+
+        <div class="quiz-filters">
+          <div class="filter-group">
+            <label for="quizTopicFilter">Chủ đề</label>
+            <select id="quizTopicFilter"></select>
+          </div>
+          <div class="filter-group">
+            <label for="quizCountFilter">Số câu</label>
+            <select id="quizCountFilter">
+              <option value="10">10 câu</option>
+              <option value="15" selected>15 câu</option>
+              <option value="20">20 câu</option>
+              <option value="30">30 câu</option>
+            </select>
+          </div>
+        </div>
+
+        <article class="card quiz-card" id="quizCard">
+          <div class="quiz-progress-wrap" id="quizProgressWrap" style="display:none;">
+            <div class="quiz-progress-bar">
+              <div class="quiz-progress-fill" id="quizProgressFill"></div>
+            </div>
+            <span class="quiz-progress-label" id="quizProgressLabel"></span>
+          </div>
+          <div id="quizContainer">
+            <span id="quizQuestionMeta" class="task-meta"></span>
+            <p id="quizQuestion" class="quiz-question-text">Nhấn "Bắt đầu" để làm bài.</p>
+            <div id="quizAnswers" class="answer-grid"></div>
+          </div>
+          <div class="quiz-footer">
+            <span id="quizStatus" class="quiz-score-badge">Điểm: 0 / 0</span>
+            <button id="nextQuestion" class="pill secondary" disabled>Câu tiếp →</button>
+          </div>
+        </article>
+      </section>
+
+      <section id="settings" class="section">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Cài đặt</p>
+            <h3>Tùy chỉnh trải nghiệm</h3>
+          </div>
+        </div>
+        <article class="card settings-card">
+          <div class="auth-card">
+            <h4>Tài khoản đồng bộ</h4>
+            <p>Đăng nhập để đồng bộ tiến độ giữa nhiều máy.</p>
+            <div class="auth-grid">
+              <div class="input-with-icon">
+                <span class="input-icon">✉</span>
+                <input id="authEmail" type="email" placeholder="Email" />
+              </div>
+              <div class="password-field">
+                <span class="input-icon">🔒</span>
+                <input id="authPassword" type="password" placeholder="Mật khẩu" />
+                <button id="togglePasswordBtn" type="button" class="ghost-action">Hiện</button>
+              </div>
+            </div>
+            <div class="password-strength">
+              <div class="strength-track">
+                <div id="passwordStrengthBar" class="strength-bar"></div>
+              </div>
+              <p id="passwordStrengthText" class="auth-note">Độ mạnh mật khẩu: chưa nhập</p>
+            </div>
+            <div class="backup-actions">
+              <button id="registerBtn" class="pill">Đăng ký</button>
+              <button id="loginBtn" class="pill secondary">Đăng nhập</button>
+              <button id="logoutBtn" class="pill secondary">Đăng xuất</button>
+              <button id="syncNowBtn" class="pill secondary">Đồng bộ ngay</button>
+              <button id="resetPasswordBtn" class="pill secondary">Quên mật khẩu</button>
+            </div>
+            <p class="auth-note">Mẹo: nhập email + mật khẩu rồi nhấn Enter để đăng nhập nhanh.</p>
+            <p id="authStatus" class="backup-status">Chưa đăng nhập.</p>
+          </div>
+          <div>
+            <h4>Giọng đọc tiếng Pháp</h4>
+            <p>Chọn giọng đọc dùng cho nút "Nghe" (từ vựng, phát âm, hội thoại).</p>
+            <div class="voice-settings">
+              <select id="voiceSelect" aria-label="Chọn giọng đọc"></select>
+              <button id="testVoice" class="pill secondary" type="button">Nghe thử</button>
+            </div>
+          </div>
+          <div>
+            <h4>Âm thanh quiz</h4>
+            <p>Phát âm thanh phản hồi khi chọn đúng/sai trong quiz.</p>
+            <button id="quizSoundToggle" class="pill secondary">🔊 Âm thanh: Bật</button>
+          </div>
+          <div>
+            <h4>Chế độ tối / sáng</h4>
+            <p>Bật sáng chế độ tối để học đỡ mỏi mắt.</p>
+            <button id="themeToggleBottom" class="pill">Chuyển chế độ</button>
+          </div>
+          <div>
+            <h4>Backup bài học</h4>
+            <p>Xuất dữ liệu học sang file và nhập lại trên máy khác để học tiếp.</p>
+            <div class="backup-actions">
+              <button id="exportBackup" class="pill">Xuất backup</button>
+              <label for="importBackupInput" class="pill secondary import-label">Nhập backup</label>
+              <input id="importBackupInput" type="file" accept="application/json" hidden />
+            </div>
+            <p id="backupStatus" class="backup-status">Chưa có thao tác backup nào.</p>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <div id="toastContainer" class="toast-container"></div>
+  <script src="vocabulary.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

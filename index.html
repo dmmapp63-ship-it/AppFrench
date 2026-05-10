@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>App Học Tiếng Pháp</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext x='0' y='14' font-size='14'%3EF%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar-main">
+      <div class="brand">
+        <div class="brand-logo">Fr</div>
+        <span class="brand-name">Học tiếng Pháp cùng Dino</span>
+      </div>
+      <div class="topbar-right">
+        <strong id="streakCounter" class="streak-badge">🔥 0 ngày</strong>
+        <button id="themeToggle" class="icon-btn" title="Chuyển chế độ">☀️</button>
+        <button id="topbarLoginBtn" class="topbar-login-btn">&#x2192; Đăng nhập</button>
+        <div id="topbarUserMenu" class="topbar-user" style="display:none">
+          <button id="topbarAvatar" class="topbar-avatar" title="Tài khoản"></button>
+          <div id="topbarDropdown" class="topbar-dropdown" style="display:none">
+            <p id="topbarUserEmail" class="topbar-user-email"></p>
+            <hr class="dropdown-divider"/>
+            <button id="syncNowBtn" class="dropdown-item">
+              ↻ Đồng bộ ngay
+            </button>
+            <button id="topbarLogout" class="dropdown-item dropdown-logout">
+              → Đăng xuất
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <aside class="sidebar">
+      <nav class="menu">
+        <button class="menu-item active" data-section="dashboard">
+          <span class="menu-icon">🏠</span>
+          <span class="menu-label">Tổng quan</span>
+        </button>
+        <button class="menu-item" data-section="vocabulary">
+          <span class="menu-icon">📖</span>
+          <span class="menu-label">Từ vựng</span>
+        </button>
+        <button class="menu-item" data-section="grammar">
+          <span class="menu-icon">✏️</span>
+          <span class="menu-label">Ngữ pháp</span>
+        </button>
+        <button class="menu-item" data-section="practice">
+          <span class="menu-icon">🎯</span>
+          <span class="menu-label">Luyện tập</span>
+        </button>
+        <button class="menu-item" data-section="quiz">
+          <span class="menu-icon">🧠</span>
+          <span class="menu-label">Quiz</span>
+        </button>
+        <button class="menu-item" data-section="roadmap">
+          <span class="menu-icon">🗺</span>
+          <span class="menu-label">Lộ trình</span>
+        </button>
+        <button class="menu-item" data-section="phonetics">
+          <span class="menu-icon">🎤</span>
+          <span class="menu-label">Phát âm</span>
+        </button>
+        <button class="menu-item" data-section="ai-tutor">
+          <span class="menu-icon">🤖</span>
+          <span class="menu-label">AI Tutor</span>
+        </button>
+        <button class="menu-item" data-section="games">
+          <span class="menu-icon">🎮</span>
+          <span class="menu-label">Trò chơi</span>
+        </button>
+        <button class="menu-item admin-nav-item" data-section="admin" id="adminNavItem" style="display:none">
+          <span class="menu-icon">🛡️</span>
+          <span class="menu-label">Admin</span>
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="menu-item" data-section="settings">
+          <span class="menu-icon">⚙️</span>
+          <span class="menu-label">Cài đặt</span>
+        </button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <div class="content-topbar">
+        <h2 id="currentSectionTitle">Tổng quan</h2>
+      </div>
+
+      <section id="dashboard" class="section active-section">
+        <div class="grid-2">
+          <article class="card welcome-card">
+            <div>
+              <p class="eyebrow">Bắt đầu ngay</p>
+              <h3>Học tiếng Pháp dễ dàng mỗi ngày</h3>
+              <p>Ôn từ vựng, nắm ngữ pháp, luyện nói và chinh phục quiz.</p>
+            </div>
+            <img src="https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=500&q=60" alt="French learning" />
+          </article>
+
+          <div class="stats-grid">
+            <article class="stat-card">
+              <span>Từ đã học</span>
+              <strong id="wordsLearned">0</strong>
+            </article>
+            <article class="stat-card">
+              <span>Bài ngữ pháp</span>
+              <strong id="grammarRead">0</strong>
+            </article>
+            <article class="stat-card">
+              <span>Điểm quiz</span>
+              <strong id="quizScore">0</strong>
+            </article>
+            <article class="stat-card">
+              <span>Yêu thích</span>
+              <strong id="favoriteCount">0</strong>
+            </article>
+          </div>
+        </div>
+
+        <article class="card history-card">
+          <p class="card-section-label">Hoạt động gần đây</p>
+          <div id="activityHistory" class="history-list"></div>
+        </article>
+
+        <article class="card eval-card">
+          <div class="eval-header">
+            <p class="card-section-label">Đánh giá học tập</p>
+            <div class="eval-tabs">
+              <button class="pill eval-tab active" data-period="daily">Hôm nay</button>
+              <button class="pill eval-tab" data-period="weekly">Tuần này</button>
+              <button class="pill eval-tab" data-period="monthly">Tháng này</button>
+            </div>
+          </div>
+          <div id="evalContent" class="eval-content"></div>
+          <div id="evalComment" class="eval-comment"></div>
+        </article>
+
+        <article class="card word-of-day-card">
+          <p class="eyebrow">Từ của ngày hôm nay</p>
+          <div class="wod-body">
+            <div class="wod-left">
+              <h3 id="wodWord">—</h3>
+              <p id="wodMeaning" class="wod-meaning">—</p>
+              <small id="wodExample" class="wod-example"></small>
+            </div>
+            <div class="wod-right">
+              <span id="wodLevel" class="vocab-tag"></span>
+              <span id="wodTopic" class="vocab-tag"></span>
+              <button id="wodSpeak" class="pill secondary">🔊 Nghe</button>
+            </div>
+          </div>
+        </article>
+
+        <div class="grid-3 cards-preview">
+          <article class="small-card">
+            <h4>Chủ đề phổ biến</h4>
+            <p>Giới thiệu bản thân, mua sắm, du lịch, gia đình.</p>
+          </article>
+          <article class="small-card">
+            <h4>Luyện phát âm</h4>
+            <p>Nghe và đọc đúng từ Pháp từng câu.</p>
+          </article>
+          <article class="small-card">
+            <h4>Thử thách ngày</h4>
+            <p id="dashboardChallenge">Hoàn thành 1 câu dịch/trò chơi để ghi nhận chuỗi ngày.</p>
+            <button id="refreshChallenge" class="pill secondary">Thử thách mới</button>
+            <button id="completeDailyGoal" class="pill secondary">Đánh dấu hoàn thành hôm nay</button>
+            <p id="dailyGoalStatus" class="daily-goal-status">Hôm nay bạn chưa hoàn thành mục tiêu.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="vocabulary" class="section">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Từ vựng</p>
+            <h3>Học từ mới bằng flashcard</h3>
+          </div>
+          <button id="newFlashcard" class="pill">Tạo flashcard mới</button>
+        </div>
+        <p id="vocabResultSummary" class="vocab-result-summary">Đang tải từ vựng...</p>
+        <div class="search-bar">
+          <input id="vocabSearch" type="search" placeholder="Tìm từ, ví dụ hoặc chủ đề..." />
+          <button id="favoriteFilter" class="pill secondary">Chỉ yêu thích</button>
+          <button id="clearSearch" class="pill secondary">Xóa</button>
+        </div>
+        <div class="levels-row">
+          <button class="pill level-button active" data-level="all">Tất cả</button>
+          <button class="pill level-button" data-level="A1">A1</button>
+          <button class="pill level-button" data-level="A2">A2</button>
+          <button class="pill level-button" data-level="B1">B1</button>
+          <button class="pill level-button" data-level="B2">B2</button>
+          <button class="pill level-button" data-level="C1">C1</button>
+          <button class="pill level-button" data-level="C2">C2</button>
+        </div>
+        <div class="topics-row" id="topicButtons"></div>
+
+        <p id="flashcardCounter" class="flashcard-counter"></p>
+        <div class="flashcard-scene" id="flashcardScene" title="Nhấn để lật thẻ">
+          <div class="flashcard-card card" id="flashcardInner">
+            <div class="flashcard-face flashcard-front">
+              <span class="flashcard-label">Từ tiếng Pháp</span>
+              <h2 id="flashcardWord">Bonjour</h2>
+            </div>
+            <div class="flashcard-face flashcard-back">
+              <span class="flashcard-label">Nghĩa tiếng Việt</span>
+              <p id="flashcardDefinition" class="flashcard-meaning">Xin chào</p>
+            </div>
+          </div>
+          <div class="flashcard-actions">
+            <button id="playPronunciation" class="pill">Nghe</button>
+            <button id="showExample" class="pill secondary">Xem ví dụ</button>
+            <button id="prevFlashcard" class="pill fc-prev-btn">← Trước</button>
+            <button id="markLearnedBtn" class="pill fc-learned-btn" title="Đánh dấu đã học">✓ Đã học</button>
+            <button id="nextFlashcard" class="pill fc-next-btn">→ Tiếp theo</button>
+          </div>
+        </div>
+
+        <div class="card-grid" id="vocabList"></div>
+        <div class="list-actions">
+          <button id="loadMoreVocab" class="pill secondary">Xem thêm</button>
+        </div>
+      </section>
+
+      <section id="grammar" class="section">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Ngữ pháp</p>
+            <h3>Hiểu cấu trúc và cách dùng</h3>
+          </div>
+        </div>
+        <div class="search-bar">
+          <input id="grammarSearch" type="search" placeholder="Tìm ngữ pháp..." />
+          <select id="grammarLevelFilter" class="grammar-level-select">
+            <option value="all">Tất cả cấp độ</option>
+            <option value="A1">A1</option>
+            <option value="A2">A2</option>
+            <option value="B1">B1</option>
+            <option value="B2">B2</option>
+            <option value="C1">C1</option>
+          </select>
+        </div>
+        <div class="card-grid" id="grammarList"></div>
+      </section>
+
+      <section id="roadmap" class="section">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Lộ trình</p>
+            <h3>Xây nền tảng và tiến bộ từng bước</h3>
+          </div>
+          <button id="resetRoadmap" class="pill secondary">Đặt lại tiến độ</button>
+        </div>
+        <div class="card-grid roadmap-grid" id="roadmapList"></div>
+      </section>
+
+      <section id="practice" class="section">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Luyện tập</p>
+            <h3>Viết, nói, phát âm và hội thoại</h3>
+          </div>
+        </div>
+        <div class="practice-tabs">
+          <button class="pill practice-tab active" data-tab="translate">Dịch câu</button>
+          <button class="pill practice-tab" data-tab="speaking">Luyện nói</button>
+          <button class="pill practice-tab" data-tab="pronunciation">Phát âm</button>
+          <button class="pill practice-tab" data-tab="dialogue">Hội thoại</button>
+          <button class="pill practice-tab" data-tab="listening">Nghe hiểu</button>
+          <button class="pill practice-tab" data-tab="word">🧩 Ghép từ</button>
+        </div>
+
+        <div class="levels-row" id="practiceLevelRow">
+          <button class="pill level-button active" data-practice-level="all">Tất cả</button>
+          <button class="pill level-button" data-practice-level="A1">A1</button>
+          <button class="pill level-button" data-practice-level="A2">A2</button>
+          <button class="pill level-button" data-practice-level="B1">B1</button>
+          <button class="pill level-button" data-practice-level="B2">B2</button>
+          <button class="pill level-button" data-practice-level="C1">C1</button>
+          <button class="pill level-button" data-practice-level="C2">C2</button>
+        </div>
+
+        <div class="practice-filters">
+          <div class="filter-group">
+            <label for="practiceOrderFilter">Thứ tự</label>
+            <select id="practiceOrderFilter">
+              <option value="easy">Dễ → Khó</option>
+              <option value="hard">Khó → Dễ</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="translatePanel" class="practice-panel">
+          <article class="card practice-card">
+            <div>
+              <h4>Chuyển câu sau sang tiếng Pháp</h4>
+              <p id="practiceMeta" class="task-meta"></p>
+              <p id="practicePrompt">Tôi muốn cà phê.</p>
+              <textarea id="practiceAnswer" placeholder="Viết câu tiếng Pháp..." rows="4"></textarea>
+              <div class="practice-buttons">
+                <button id="checkAnswer" class="pill">Kiểm tra</button>
+                <button id="nextPrompt" class="pill secondary">Câu khác</button>
+              </div>
+              <p id="practiceFeedback" class="feedback"></p>
+            </div>
+          </article>
+        </div>
+
+        <div id="speakingPanel" class="practice-panel" style="display:none;">
+          <article class="card practice-card">
+            <div>
+              <h4>Luyện nói</h4>
+              <p id="speakingMeta" class="task-meta"></p>
+              <p id="speakingInstructions">Nhấn nút và nói theo câu tiếng Pháp.</p>
+              <p id="speakingPrompt">Je parle de ma journée.</p>
+              <div class="practice-buttons">
+                <button id="startSpeaking" class="pill">Bắt đầu nói</button>
+                <button id="nextSpeaking" class="pill secondary">Câu khác</button>
+              </div>
+              <p id="speakingRecognized" class="recognized-text"></p>
+              <p id="speakingFeedback" class="feedback"></p>
+            </div>
+          </article>
+        </div>
+
+        <div id="pronunciationPanel" class="practice-panel" style="display:none;">
+          <article class="card practice-card">
+            <div>
+              <h4>Phát âm chính xác</h4>
+              <p id="pronunciationMeta" class="task-meta"></p>
+              <p>Nghe mẫu, nói theo và nhận phản hồi phát âm.</p>
+              <p id="pronunciationPrompt">Je voudrais un café, s'il vous plaît.</p>
+              <div class="practice-buttons">
+                <button id="playPronunciationPhrase" class="pill">Nghe mẫu</button>
+                <button id="startPronunciation" class="pill secondary">Bắt đầu phát âm</button>
+                <button id="nextPronunciation" class="pill secondary">Câu khác</button>
+              </div>
+              <p id="pronunciationRecognized" class="recognized-text"></p>
+              <p id="pronunciationFeedback" class="feedback"></p>
+            </div>
+          </article>
+        </div>
+
+        <div id="listeningPanel" class="practice-panel" style="display:none;">
+          <article class="card practice-card">
+            <div>
+              <h4>Nghe và chọn nghĩa đúng</h4>
+              <p id="listeningMeta" class="task-meta"></p>
+              <div class="practice-buttons">
+                <button id="playListeningSentence" class="pill">🔊 Nghe câu</button>
+                <button id="nextListening" class="pill secondary">Câu khác</button>
+              </div>
+              <div id="listeningAnswers" class="answer-grid"></div>
+              <p id="listeningFeedback" class="feedback"></p>
+            </div>
+          </article>
+        </div>
+
+        <div id="wordPanel" class="practice-panel" style="display:none;">
+          <article class="card practice-card">
+            <div class="word-mode-row">
+              <button class="pill word-mode-btn active" data-word-mode="sentence">🧩 Ghép câu</button>
+              <button class="pill word-mode-btn" data-word-mode="match">🔗 Nối cặp</button>
+            </div>
+
+            <div id="sentenceBuilderPanel">
+              <h4>Sắp xếp các từ thành câu đúng</h4>
+              <p id="sentenceMeta" class="task-meta"></p>
+              <p id="sentencePrompt" class="practice-prompt"></p>
+              <div class="answer-area" id="sentenceAnswerArea">
+                <span class="answer-hint">Nhấn các từ bên dưới để ghép câu</span>
+              </div>
+              <div class="word-bank" id="wordBankArea"></div>
+              <p id="sentenceFeedback" class="feedback"></p>
+              <div class="practice-buttons">
+                <button id="checkSentence" class="pill">Kiểm tra</button>
+                <button id="clearSentence" class="pill secondary">Xóa hết</button>
+                <button id="nextSentence" class="pill secondary">Câu tiếp →</button>
+              </div>
+            </div>
+
+            <div id="matchGamePanel" style="display:none;">
+              <h4>Nối từ tiếng Pháp với nghĩa tiếng Việt</h4>
+              <p id="matchScore" class="task-meta"></p>
+              <div class="match-grid" id="matchGrid"></div>
+              <p id="matchFeedback" class="feedback"></p>
+              <div class="practice-buttons">
+                <button id="newMatchGame" class="pill secondary">Bộ mới 🔀</button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div id="dialoguePanel" class="practice-panel" style="display:none;">
+          <article class="card practice-card">
+            <div>
+              <h4>Hội thoại thực tế</h4>
+              <p id="dialogueMeta" class="task-meta"></p>
+              <p>Đọc hội thoại, nghe và xem dịch nghĩa từng câu.</p>
+              <div id="dialogueContent" class="dialogue-card">
+                <p id="dialogueTitle"><strong>Quán cà phê</strong></p>
+                <div id="dialogueText"></div>
+                <div class="dialogue-actions">
+                  <button id="toggleDialogueTranslation" class="pill secondary">Hiển thị / Ẩn dịch</button>
+                  <button id="speakDialogueLine" class="pill secondary">Nghe hội thoại</button>
+                </div>
+              </div>
+              <div class="practice-buttons">
+                <button id="nextDialogue" class="pill">Hội thoại khác</button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="quiz" class="section">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Quiz</p>
+            <h3>Kiểm tra trình độ nhanh</h3>
+          </div>
+          <button id="startQuiz" class="pill">▶ Bắt đầu</button>
+        </div>
+
+        <div class="levels-row" id="quizLevelRow">
+          <button class="pill level-button active" data-quiz-level="all">Tất cả</button>
+          <button class="pill level-button" data-quiz-level="A1">A1</button>
+          <button class="pill level-button" data-quiz-level="A2">A2</button>
+          <button class="pill level-button" data-quiz-level="B1">B1</button>
+          <button class="pill level-button" data-quiz-level="B2">B2</button>
+          <button class="pill level-button" data-quiz-level="C1">C1</button>
+          <button class="pill level-button" data-quiz-level="C2">C2</button>
+        </div>
+
+        <div class="quiz-filters">
+          <div class="filter-group">
+            <label for="quizTopicFilter">Chủ đề</label>
+            <select id="quizTopicFilter"></select>
+          </div>
+          <div class="filter-group">
+            <label for="quizCountFilter">Số câu</label>
+            <select id="quizCountFilter">
+              <option value="10">10 câu</option>
+              <option value="15" selected>15 câu</option>
+              <option value="20">20 câu</option>
+              <option value="30">30 câu</option>
+            </select>
+          </div>
+          <div class="filter-group filter-group-check">
+            <label class="check-label">
+              <input type="checkbox" id="quizReverseMode" />
+              Đảo ngược (Việt → Pháp)
+            </label>
+          </div>
+        </div>
+
+        <article class="card quiz-card" id="quizCard">
+          <div class="quiz-progress-wrap" id="quizProgressWrap" style="display:none;">
+            <div class="quiz-progress-bar">
+              <div class="quiz-progress-fill" id="quizProgressFill"></div>
+            </div>
+            <span class="quiz-progress-label" id="quizProgressLabel"></span>
+          </div>
+          <div id="quizContainer">
+            <span id="quizQuestionMeta" class="task-meta"></span>
+            <p id="quizQuestion" class="quiz-question-text">Nhấn "Bắt đầu" để làm bài.</p>
+            <div id="quizAnswers" class="answer-grid"></div>
+          </div>
+          <div class="quiz-footer">
+            <span id="quizStatus" class="quiz-score-badge">Điểm: 0 / 0</span>
+            <button id="nextQuestion" class="pill secondary" disabled>Câu tiếp →</button>
+          </div>
+        </article>
+      </section>
+
+      <section id="settings" class="section">
+
+        <!-- Giao diện -->
+        <article class="card settings-group">
+          <h4 class="settings-group-title">Giao diện</h4>
+
+          <div class="settings-row">
+            <div class="settings-row-info">
+              <span class="settings-row-label">Chế độ tối</span>
+              <span class="settings-row-desc">Chuyển đổi giao diện sáng/tối</span>
+            </div>
+            <button id="themeToggleBottom" class="toggle-switch" role="switch" aria-checked="false" title="Chuyển chế độ">
+              <span class="toggle-thumb"></span>
+            </button>
+          </div>
+
+          <div class="settings-row">
+            <div class="settings-row-info">
+              <span class="settings-row-label">Hiệu ứng âm thanh</span>
+              <span class="settings-row-desc">Âm thanh đúng/sai trong quiz</span>
+            </div>
+            <button id="quizSoundToggle" class="toggle-switch toggle-on" role="switch" aria-checked="true">
+              <span class="toggle-thumb"></span>
+            </button>
+          </div>
+
+          <div class="settings-row settings-row-block">
+            <span class="settings-row-label">Màu chủ đạo</span>
+            <div class="color-picker" id="accentColorPicker">
+              <button class="color-dot color-dot-active" data-color="#3b82f6" style="background:#3b82f6" title="Xanh dương"></button>
+              <button class="color-dot" data-color="#22c55e" style="background:#22c55e" title="Xanh lá"></button>
+              <button class="color-dot" data-color="#8b5cf6" style="background:#8b5cf6" title="Tím"></button>
+              <button class="color-dot" data-color="#f97316" style="background:#f97316" title="Cam"></button>
+              <button class="color-dot" data-color="#ef4444" style="background:#ef4444" title="Đỏ"></button>
+              <button class="color-dot" data-color="#ec4899" style="background:#ec4899" title="Hồng"></button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Giọng đọc -->
+        <article class="card settings-group">
+          <h4 class="settings-group-title">Giọng đọc tiếng Pháp</h4>
+          <p class="settings-desc">Chọn giọng đọc dùng cho nút "Nghe" (từ vựng, phát âm, hội thoại).</p>
+          <div class="voice-settings">
+            <select id="voiceSelect" aria-label="Chọn giọng đọc"></select>
+            <button id="testVoice" class="pill secondary" type="button">▶ Nghe thử</button>
+          </div>
+        </article>
+
+        <!-- hidden auth elements for JS compatibility -->
+        <input id="authEmail" type="hidden" />
+        <input id="authPassword" type="hidden" />
+        <span id="authStatus" style="display:none"></span>
+
+        <!-- Groq API Key -->
+        <article class="card settings-group groq-card">
+          <div class="groq-header">
+            <h4 class="settings-group-title">Groq API Key</h4>
+            <span class="groq-badge">MIỄN PHÍ</span>
+          </div>
+          <p class="settings-desc">AI hỗ trợ học tiếng Pháp — 14.400 lượt hỏi mỗi ngày, không cần thẻ tín dụng.</p>
+          <div class="groq-input-row">
+            <input id="groqApiKeyInput" type="password" placeholder="gsk_..." class="groq-key-input" />
+            <button id="groqKeyToggle" class="ghost-action" type="button">👁</button>
+            <button id="groqKeySave" class="pill">Lưu</button>
+          </div>
+          <p id="groqKeyStatus" class="backup-status"></p>
+          <details class="groq-guide">
+            <summary>Hướng dẫn lấy Groq API key (miễn phí, không cần thẻ)</summary>
+            <ol class="groq-steps">
+              <li>
+                <strong>Truy cập Groq Console</strong><br/>
+                <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a>
+              </li>
+              <li>
+                <strong>Đăng nhập bằng Google / GitHub</strong><br/>
+                <span>Không cần thẻ tín dụng, không cần verify gì cả.</span>
+              </li>
+              <li>
+                <strong>Nhấn "Create API Key"</strong><br/>
+                <span>Đặt tên bất kỳ → Submit → copy key (dạng gsk_...).</span>
+              </li>
+              <li>
+                <strong>Dán key vào ô bên trên rồi nhấn Lưu</strong><br/>
+                <span>Xong! AI dùng được ngay.</span>
+              </li>
+            </ol>
+          </details>
+        </article>
+
+        <!-- Backup -->
+        <article class="card settings-group">
+          <h4 class="settings-group-title">Backup dữ liệu</h4>
+          <p class="settings-desc">Xuất dữ liệu học sang file và nhập lại trên máy khác.</p>
+          <div class="backup-actions">
+            <button id="exportBackup" class="pill">⬇ Xuất backup</button>
+            <label for="importBackupInput" class="pill secondary import-label">⬆ Nhập backup</label>
+            <input id="importBackupInput" type="file" accept="application/json" hidden />
+          </div>
+          <p id="backupStatus" class="backup-status">Chưa có thao tác backup nào.</p>
+        </article>
+
+      </section>
+
+      <section id="ai-tutor" class="section">
+        <div class="ai-hero">
+          <div class="ai-icon-wrap">🤖</div>
+          <h2>AI Tutor tiếng Pháp</h2>
+          <p>Hỏi bất cứ điều gì về tiếng Pháp — ngữ pháp, từ vựng, dịch, giải thích</p>
+        </div>
+        <div id="aiNoKey" class="ai-no-key">
+          🔑 Chưa có Groq API Key. Vào <button class="link-btn" data-section="settings">Cài đặt</button> để thêm key miễn phí.
+        </div>
+        <div id="aiChatWrap" class="ai-chat-wrap" style="display:none">
+          <div id="aiMessages" class="ai-messages"></div>
+          <div class="ai-input-row">
+            <input id="aiInput" type="text" placeholder="Hỏi về ngữ pháp, từ vựng, phát âm..." />
+            <button id="aiSend" class="pill">Gửi →</button>
+          </div>
+          <div class="ai-suggestions">
+            <button class="ai-chip" data-q="Giải thích cách dùng động từ 'avoir' và 'être'">avoir vs être</button>
+            <button class="ai-chip" data-q="Sự khác nhau giữa Passé Composé và Imparfait">Passé vs Imparfait</button>
+            <button class="ai-chip" data-q="Cách phát âm chữ R trong tiếng Pháp">Phát âm chữ R</button>
+            <button class="ai-chip" data-q="Cách dùng 'du', 'de la', 'des' trong tiếng Pháp">Articles partitifs</button>
+            <button class="ai-chip" data-q="Các mẫu câu giao tiếp cơ bản tiếng Pháp">Giao tiếp cơ bản</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="phonetics" class="section">
+        <div class="phon-hero">
+          <div class="phon-icon-wrap">🎤</div>
+          <h2>Từ điển phát âm tiếng Pháp</h2>
+          <p>Tra cứu phát âm, tìm từ trong kho từ vựng</p>
+        </div>
+        <div class="phon-search-wrap">
+          <div class="phon-search-box">
+            <span class="phon-search-icon">🔍</span>
+            <input id="phonSearch" type="search" placeholder="Nhập từ tiếng Pháp bất kỳ..." autocomplete="off" spellcheck="false" />
+            <button id="phonClear" class="phon-clear" title="Xóa">×</button>
+          </div>
+          <p id="phonResultCount" class="phon-result-count"></p>
+        </div>
+        <div id="phonResults" class="phon-results"></div>
+      </section>
+
+      <!-- Games -->
+      <section id="games" class="section">
+        <div id="gameLobby" class="game-lobby">
+          <div class="game-lobby-hero">
+            <div class="game-lobby-icon">🎮</div>
+            <h2>Trò chơi từ vựng</h2>
+            <p>Học qua chơi — chọn trò chơi để bắt đầu!</p>
+          </div>
+          <div class="game-lobby-grid">
+            <button class="game-lobby-card" data-game="hangman" onclick="startHangman()">
+              <span class="glc-icon">🔤</span>
+              <strong class="glc-name">Đoán từ</strong>
+              <span class="glc-desc">Đoán từng chữ cái trước khi hết cơ hội</span>
+            </button>
+            <button class="game-lobby-card" data-game="memory" onclick="startMemory()">
+              <span class="glc-icon">🃏</span>
+              <strong class="glc-name">Lật thẻ đôi</strong>
+              <span class="glc-desc">Tìm cặp từ Pháp – nghĩa tiếng Việt</span>
+            </button>
+            <button class="game-lobby-card" data-game="falling" onclick="startFalling()">
+              <span class="glc-icon">⚡</span>
+              <strong class="glc-name">Gõ nhanh</strong>
+              <span class="glc-desc">Gõ nghĩa trước khi từ rơi xuống đáy</span>
+            </button>
+            <button class="game-lobby-card" data-game="fillblank" onclick="startFillBlank()">
+              <span class="glc-icon">🎯</span>
+              <strong class="glc-name">Điền chỗ trống</strong>
+              <span class="glc-desc">Điền từ tiếng Pháp vào câu hoàn chỉnh</span>
+            </button>
+          </div>
+          <div id="gameLbSection" class="game-lb-section"></div>
+        </div>
+        <div id="gamePlayArea" style="display:none">
+          <div class="game-play-header">
+            <button id="gameBackBtn" class="pill secondary" onclick="showGameLobby()">← Trò khác</button>
+            <span id="gameTitle" class="game-play-title"></span>
+            <span id="gameScore" class="game-play-score"></span>
+          </div>
+          <div id="gameContainer"></div>
+        </div>
+      </section>
+
+      <!-- Admin Panel -->
+      <section id="admin" class="section">
+        <div class="admin-header">
+          <div class="admin-badge-wrap">
+            <span class="admin-badge">🛡️ ADMIN</span>
+            <h2>Bảng điều khiển Admin</h2>
+            <p class="admin-sub">Chào mừng, <strong>tinkmaymo@gmail.com</strong></p>
+          </div>
+          <button id="adminRefreshBtn" class="pill secondary">↻ Tải lại</button>
+        </div>
+
+        <div class="admin-stats-row" id="adminStatsRow">
+          <div class="admin-stat-card">
+            <span class="admin-stat-label">Tin nhắn mới</span>
+            <strong id="adminMsgCount" class="admin-stat-val">—</strong>
+          </div>
+        </div>
+
+        <article class="card admin-msg-card">
+          <p class="card-section-label">Tin nhắn từ người dùng</p>
+          <div id="adminMsgList" class="admin-msg-list">
+            <p class="admin-loading">Đang tải tin nhắn...</p>
+          </div>
+        </article>
+
+        <article class="card admin-broadcast-card">
+          <p class="card-section-label">📣 Gửi thông báo cho tất cả người dùng</p>
+          <p class="settings-desc">Tin nhắn sẽ hiện thị ngay khi người dùng mở app hoặc đăng nhập.</p>
+          <textarea id="broadcastMsg" class="modal-input contact-textarea" placeholder="Nội dung thông báo..." rows="3"></textarea>
+          <div style="display:flex;gap:10px;margin-top:10px;align-items:center;">
+            <button id="broadcastSendBtn" class="pill">&#128228; Gửi thông báo</button>
+            <p id="broadcastStatus" class="modal-status" style="text-align:left;margin:0;"></p>
+          </div>
+        </article>
+
+        <article class="card admin-emailjs-card">
+          <p class="card-section-label">Cấu hình EmailJS <span class="modal-optional">(nhận email thông báo)</span></p>
+          <p class="settings-desc">Đăng ký tại <a href="https://emailjs.com" target="_blank">emailjs.com</a> để nhận email mỗi khi có tin nhắn mới.</p>
+          <div class="admin-emailjs-row">
+            <input id="ejsPublicKey" class="modal-input" type="text" placeholder="Public Key (vd: abc123XYZ)" />
+            <input id="ejsServiceId" class="modal-input" type="text" placeholder="Service ID (vd: service_xxx)" />
+            <input id="ejsTemplateId" class="modal-input" type="text" placeholder="Template ID (vd: template_xxx)" />
+            <button id="ejsSaveBtn" class="pill">Lưu cấu hình</button>
+          </div>
+          <p id="ejsStatus" class="modal-status" style="text-align:left;margin-top:6px;"></p>
+        </article>
+      </section>
+
+    </main>
+
+  <!-- Broadcast notification banner -->
+  <div id="broadcastBanner" class="broadcast-banner" style="display:none">
+    <span class="broadcast-icon">📣</span>
+    <p id="broadcastBannerText" class="broadcast-text"></p>
+    <button id="broadcastBannerClose" class="broadcast-close">×</button>
+  </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal-overlay" style="display:none" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">Đăng nhập</h3>
+          <p class="modal-subtitle">Sync tiến độ học giữa các thiết bị</p>
+        </div>
+        <button id="closeLoginModal" class="modal-close" aria-label="Đóng">×</button>
+      </div>
+
+      <div class="modal-form">
+        <div class="modal-field" id="modalNameField" style="display:none">
+          <label class="modal-label">Tên hiển thị</label>
+          <input id="modalDisplayName" class="modal-input" type="text" placeholder="Nguyễn Văn A" autocomplete="name" />
+        </div>
+        <div class="modal-field">
+          <label class="modal-label">Email</label>
+          <input id="modalEmail" class="modal-input" type="email" placeholder="ten@example.com" autocomplete="email" />
+        </div>
+        <div class="modal-field">
+          <label class="modal-label">Mật khẩu</label>
+          <div class="modal-pw-wrap">
+            <input id="modalPassword" class="modal-input" type="password" placeholder="••••••" autocomplete="current-password" />
+            <button id="modalTogglePw" type="button" class="modal-pw-toggle">Hiện</button>
+          </div>
+        </div>
+        <button id="modalLoginBtn" class="modal-btn-primary">→ Đăng nhập</button>
+        <button id="modalRegisterBtn" class="modal-btn-secondary">Tạo tài khoản mới</button>
+        <button id="modalForgotBtn" class="forgot-link">Đặt lại mật khẩu</button>
+        <p id="modalAuthStatus" class="modal-status"></p>
+      </div>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Floating chat button -->
+  <button id="floatingChatBtn" class="floating-chat-btn" title="Nhắn tin admin" aria-label="Nhắn tin admin">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  </button>
+
+  <!-- Contact Admin Modal -->
+  <div id="contactModal" class="modal-overlay" style="display:none" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">Nhắn tin Admin</h3>
+          <p class="modal-subtitle">Góp ý, báo lỗi hoặc yêu cầu tính năng mới</p>
+        </div>
+        <button id="closeContactModal" class="modal-close" aria-label="Đóng">×</button>
+      </div>
+      <div class="modal-form">
+        <div class="modal-field">
+          <label class="modal-label">Tên của bạn <span class="modal-optional">(không bắt buộc)</span></label>
+          <input id="contactName" class="modal-input" type="text" placeholder="Nguyễn Văn A" autocomplete="name" />
+        </div>
+        <div class="modal-field">
+          <label class="modal-label">Email <span class="modal-optional">(để admin phản hồi)</span></label>
+          <input id="contactEmail" class="modal-input" type="email" placeholder="ban@example.com" autocomplete="email" />
+        </div>
+        <div class="modal-field">
+          <label class="modal-label">Nội dung tin nhắn</label>
+          <textarea id="contactMessage" class="modal-input contact-textarea" placeholder="Viết tin nhắn của bạn..." rows="4"></textarea>
+        </div>
+        <button id="contactSendBtn" class="modal-btn-primary">✉ Gửi tin nhắn</button>
+        <p id="contactStatus" class="modal-status"></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="vocabulary.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

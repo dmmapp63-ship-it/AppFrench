@@ -66,6 +66,8 @@ const importBackupInput = document.getElementById('importBackupInput');
 const backupStatus = document.getElementById('backupStatus');
 const authEmail = document.getElementById('authEmail');
 const authPassword = document.getElementById('authPassword');
+const passwordStrengthBar = document.getElementById('passwordStrengthBar');
+const passwordStrengthText = document.getElementById('passwordStrengthText');
 const syncNowBtn = document.getElementById('syncNowBtn');
 const authStatus = document.getElementById('authStatus');
 const toastContainer = document.getElementById('toastContainer');
@@ -2034,8 +2036,9 @@ function initFirebaseSync() {
       if (currentUser) {
         if (authEmail && currentUser.email) authEmail.value = currentUser.email;
         if (authPassword) authPassword.value = '';
-        setAuthStatus(`Đã đăng nhập: ${currentUser.email || currentUser.displayName}.`);
+        setAuthStatus(`Đã đăng nhập: ${getDisplayName(currentUser)}.`);
         updateAuthButtons();
+        reattributeGuestScores(currentUser);
         await pullCloudData();
       } else {
         setAuthStatus('Chưa đăng nhập.');
@@ -2153,6 +2156,11 @@ if (broadcastSendBtn) {
 /* ── Admin Panel ─────────────────────────── */
 const ADMIN_EMAIL = 'tinkmaymo@gmail.com';
 const isAdmin = () => currentUser && currentUser.email === ADMIN_EMAIL;
+function getDisplayName(user) {
+  if (!user) return 'Khách';
+  if (user.email === ADMIN_EMAIL) return 'Admin';
+  return user.displayName || user.email.split('@')[0];
+}
 
 let ejsPublicKey = localStorage.getItem('ejsPublicKey') || '';
 let ejsServiceId = localStorage.getItem('ejsServiceId') || '';
@@ -2332,9 +2340,9 @@ function updateTopbarUser(user) {
   if (user) {
     topbarLoginBtn.style.display = 'none';
     topbarUserMenu.style.display = 'flex';
-    if (topbarUserEmail) topbarUserEmail.textContent = user.email || user.displayName || '';
+    if (topbarUserEmail) topbarUserEmail.textContent = getDisplayName(user);
     if (topbarAvatar) {
-      const initials = (user.displayName || user.email || '?').charAt(0).toUpperCase();
+      const initials = getDisplayName(user).charAt(0).toUpperCase();
       if (user.photoURL) {
         topbarAvatar.innerHTML = `<img src="${user.photoURL}" alt="${initials}" />`;
         topbarAvatar.classList.add('has-photo');
@@ -2400,19 +2408,41 @@ async function modalLoginEmail() {
   }
 }
 
+let _registerMode = false;
+
+function setRegisterMode(on) {
+  _registerMode = on;
+  const nameField = document.getElementById('modalNameField');
+  const title = document.querySelector('#loginModal .modal-title');
+  const loginBtn = document.getElementById('modalLoginBtn');
+  const registerBtn = document.getElementById('modalRegisterBtn');
+  if (nameField) nameField.style.display = on ? 'flex' : 'none';
+  if (title) title.textContent = on ? 'Tạo tài khoản' : 'Đăng nhập';
+  if (loginBtn) loginBtn.textContent = on ? '← Đã có tài khoản' : '→ Đăng nhập';
+  if (registerBtn) registerBtn.textContent = on ? '✓ Đăng ký ngay' : 'Tạo tài khoản mới';
+  if (on) document.getElementById('modalDisplayName')?.focus();
+  else document.getElementById('modalEmail')?.focus();
+  setModalStatus('');
+}
+
 async function modalRegisterEmail() {
   if (!firebaseReady || !auth || authLoading) return;
+  if (!_registerMode) { setRegisterMode(true); return; }
+  const displayName = document.getElementById('modalDisplayName')?.value.trim();
   const email = document.getElementById('modalEmail')?.value.trim();
   const password = document.getElementById('modalPassword')?.value;
+  if (!displayName) { setModalStatus('Vui lòng nhập tên hiển thị.', true); document.getElementById('modalDisplayName')?.focus(); return; }
   if (!email || !isValidEmail(email)) { setModalStatus('Email không đúng định dạng.', true); return; }
   if (!password || password.length < 6) { setModalStatus('Mật khẩu cần ít nhất 6 ký tự.', true); return; }
   setAuthLoading(true);
   try {
-    await auth.createUserWithEmailAndPassword(email, password);
-    setModalStatus('Tạo tài khoản thành công!');
-    showToast('Đã tạo tài khoản!');
+    const cred = await auth.createUserWithEmailAndPassword(email, password);
+    await cred.user.updateProfile({ displayName });
+    setModalStatus(`Chào mừng, ${displayName}! Tài khoản đã tạo.`);
+    showToast(`Chào ${displayName}!`);
+    setRegisterMode(false);
   } catch (e) {
-    setModalStatus(getAuthErrorMessage(e), true);
+    setModalStatus(mapAuthError(e), true);
   } finally {
     setAuthLoading(false);
   }
@@ -2434,7 +2464,9 @@ const modalLoginBtn = document.getElementById('modalLoginBtn');
 const modalRegisterBtn = document.getElementById('modalRegisterBtn');
 const modalForgotBtn = document.getElementById('modalForgotBtn');
 
-if (modalLoginBtn) modalLoginBtn.addEventListener('click', modalLoginEmail);
+if (modalLoginBtn) modalLoginBtn.addEventListener('click', () => {
+  if (_registerMode) { setRegisterMode(false); } else { modalLoginEmail(); }
+});
 if (modalRegisterBtn) modalRegisterBtn.addEventListener('click', modalRegisterEmail);
 if (modalForgotBtn) modalForgotBtn.addEventListener('click', modalForgotPassword);
 
@@ -2543,6 +2575,7 @@ function createBackupPayload() {
       frenchCoachReadGrammar: readStorage('frenchCoachReadGrammar', []),
       frenchCoachLearnedWords: readStorage('frenchCoachLearnedWords', []),
       frenchCoachTheme: localStorage.getItem('frenchCoachTheme') || 'light',
+      frenchCoachGroqKey: localStorage.getItem('frenchCoachGroqKey') || '',
       frenchCoachUi: {
         selectedLevel,
         selectedTopic,
@@ -2603,6 +2636,12 @@ function applyBackupData(payload) {
   }
   if (typeof data.frenchCoachTheme === 'string') {
     localStorage.setItem('frenchCoachTheme', data.frenchCoachTheme);
+  }
+  if (typeof data.frenchCoachGroqKey === 'string' && data.frenchCoachGroqKey) {
+    localStorage.setItem('frenchCoachGroqKey', data.frenchCoachGroqKey);
+    groqApiKey = data.frenchCoachGroqKey;
+    if (groqApiKeyInput) groqApiKeyInput.value = data.frenchCoachGroqKey;
+    updateAiUI();
   }
 
   if (data.frenchCoachUi && typeof data.frenchCoachUi === 'object') {
@@ -3583,4 +3622,401 @@ function init() {
   updatePasswordStrengthUI();
 }
 
+let activeGameCleanup = null;
+
 init();
+
+/* ══════════════════════════════════════════
+   🎮 GAMES MODULE
+══════════════════════════════════════════ */
+
+function showGameLobby() {
+  document.getElementById('gameLobby').style.display = 'block';
+  document.getElementById('gamePlayArea').style.display = 'none';
+  if (activeGameCleanup) { activeGameCleanup(); activeGameCleanup = null; }
+  renderGameLeaderboard();
+}
+
+function showGamePlay(title) {
+  document.getElementById('gameLobby').style.display = 'none';
+  document.getElementById('gamePlayArea').style.display = 'block';
+  document.getElementById('gameTitle').textContent = title;
+  document.getElementById('gameScore').textContent = '';
+  document.getElementById('gameContainer').innerHTML = '';
+}
+
+const gameBackBtn = document.getElementById('gameBackBtn');
+if (gameBackBtn) gameBackBtn.addEventListener('click', showGameLobby);
+document.querySelector('.menu-item[data-section="games"]')?.addEventListener('click', () => setTimeout(renderGameLeaderboard, 50));
+
+function randVocab(n) {
+  const pool = vocabularies.filter(v => v.word && v.meaning);
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, n);
+}
+
+/* ── Leaderboard ──────────────────────────── */
+function reattributeGuestScores(user) {
+  if (!user) return;
+  const all = JSON.parse(localStorage.getItem('frenchGameScores') || '[]');
+  const name = getDisplayName(user);
+  let changed = false;
+  all.forEach(s => { if (s.name === 'Khách') { s.name = name; changed = true; } });
+  if (changed) localStorage.setItem('frenchGameScores', JSON.stringify(all));
+}
+
+function saveGameScore(game, score) {
+  const all = JSON.parse(localStorage.getItem('frenchGameScores') || '[]');
+  const name = getDisplayName(currentUser);
+  all.push({ game, score, name, date: new Date().toLocaleDateString('vi-VN') });
+  all.sort((a, b) => b.score - a.score);
+  localStorage.setItem('frenchGameScores', JSON.stringify(all.slice(0, 100)));
+}
+
+function getTopScores(game, n = 3) {
+  const all = JSON.parse(localStorage.getItem('frenchGameScores') || '[]');
+  return all.filter(s => s.game === game).slice(0, n);
+}
+
+function renderGameLeaderboard() {
+  const el = document.getElementById('gameLbSection');
+  if (!el) return;
+  const games = [
+    { key:'hangman',  icon:'🔤', name:'Đoán từ'     },
+    { key:'falling',  icon:'⚡', name:'Gõ nhanh'    },
+    { key:'memory',   icon:'🃏', name:'Lật thẻ'     },
+    { key:'fillblank',icon:'🎯', name:'Điền chỗ trống' },
+  ];
+  const rows = games.map(g => {
+    const top = getTopScores(g.key, 3);
+    return `<div class="game-lb-card">
+      <div class="game-lb-title">${g.icon} ${g.name}</div>
+      ${top.length === 0
+        ? `<p class="game-lb-empty">Chưa có điểm</p>`
+        : top.map((s,i)=>`<div class="game-lb-row">
+            <span class="game-lb-rank">${['🥇','🥈','🥉'][i]||'•'}</span>
+            <span class="game-lb-name">${s.name||'Khách'}</span>
+            <span class="game-lb-score">${s.score}đ</span>
+            <span class="game-lb-date">${s.date}</span>
+          </div>`).join('')}
+    </div>`;
+  }).join('');
+  el.innerHTML = `<div class="game-lb-header">🏆 Bảng xếp hạng</div>
+    <div class="game-lb-grid">${rows}</div>`;
+}
+
+/* ── 🔤 HANGMAN ───────────────────────────── */
+function startHangman() {
+  showGamePlay('🔤 Đoán từ');
+  const gc = document.getElementById('gameContainer');
+  const wordObj = randVocab(1)[0];
+  if (!wordObj) { gc.innerHTML = '<p style="padding:20px">Không có từ vựng.</p>'; return; }
+
+  const target = wordObj.word.toLowerCase();
+  const uniqueLetters = [...new Set(target.split('').filter(c => /[a-zàâäéèêëîïôùûüÿçœæ]/i.test(c)))];
+  let guessed = new Set(), wrong = 0, timeLeft = 90;
+  let ticker = null, scoreSaved = false;
+  const MAX_WRONG = 6;
+  const KEY_ROWS = [
+    'azertyuiop'.split(''),
+    'qsdfghjklm'.split(''),
+    'wxcvbnéèêà'.split(''),
+    'âùûîïôçœæë'.split('')
+  ];
+  const ALL_KEYS = KEY_ROWS.flat();
+
+  function doRender() {
+    const won = uniqueLetters.length > 0 && uniqueLetters.every(l => guessed.has(l));
+    const lost = wrong >= MAX_WRONG || timeLeft <= 0;
+    if (won || lost) clearInterval(ticker);
+    if (won && !scoreSaved) { scoreSaved = true; saveGameScore('hangman', (MAX_WRONG - wrong) * 10 + Math.ceil(timeLeft / 3)); }
+    document.getElementById('gameScore').textContent = `❌ ${wrong}/${MAX_WRONG}  ⏱ ${timeLeft}s`;
+
+    const wordHTML = target.split('').map(c => {
+      if (c === ' ') return '<span class="hm-space">&nbsp;&nbsp;</span>';
+      if (!/[a-zàâäéèêëîïôùûüÿçœæ]/i.test(c)) return `<span class="hm-space">${c}</span>`;
+      return guessed.has(c)
+        ? `<span class="hm-letter revealed">${c.toUpperCase()}</span>`
+        : `<span class="hm-letter blank">_</span>`;
+    }).join('');
+
+    const kbHTML = KEY_ROWS.map(row =>
+      `<div class="hm-key-row">${row.map(k =>
+        `<button class="hm-key${guessed.has(k) ? (uniqueLetters.includes(k)?' hit':' miss') : ''}" data-k="${k}"${guessed.has(k)?' disabled':''}>${k.toUpperCase()}</button>`
+      ).join('')}</div>`
+    ).join('');
+
+    gc.innerHTML = `<div class="hm-wrap">
+      <div class="hm-layout">
+        ${hangmanSVG(wrong)}
+        <div class="hm-right-panel">
+          <p class="hm-hint">💡 Nghĩa: <em>${wordObj.meaning}</em></p>
+          <div class="hm-word">${wordHTML}</div>
+          ${won ? `<div class="game-result win">🎉 Đúng! Từ: <strong>${wordObj.word}</strong></div>
+            <button class="pill" onclick="startHangman()" style="margin-top:8px">▶ Từ mới</button>` : ''}
+          ${lost ? `<div class="game-result lose">😢 Hết lượt! Đáp án: <strong>${wordObj.word}</strong></div>
+            <button class="pill" onclick="startHangman()" style="margin-top:8px">▶ Thử lại</button>` : ''}
+        </div>
+      </div>
+      ${!won && !lost ? `<div class="hm-keyboard">${kbHTML}</div>` : ''}
+    </div>`;
+
+    gc.querySelectorAll('.hm-key:not([disabled])').forEach(b => {
+      b.onclick = () => {
+        const k = b.dataset.k;
+        if (guessed.has(k)) return;
+        guessed.add(k);
+        if (!uniqueLetters.includes(k)) wrong++;
+        doRender();
+      };
+    });
+  }
+
+  ticker = setInterval(() => {
+    timeLeft--;
+    const won = uniqueLetters.every(l => guessed.has(l));
+    if (won || timeLeft <= 0 || wrong >= MAX_WRONG) { clearInterval(ticker); doRender(); return; }
+    document.getElementById('gameScore').textContent = `❌ ${wrong}/${MAX_WRONG}  ⏱ ${timeLeft}s`;
+  }, 1000);
+
+  function onKey(e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    const k = e.key.toLowerCase();
+    if (ALL_KEYS.includes(k) && !guessed.has(k)) { guessed.add(k); if (!uniqueLetters.includes(k)) wrong++; doRender(); }
+  }
+  document.addEventListener('keydown', onKey);
+  activeGameCleanup = () => { document.removeEventListener('keydown', onKey); clearInterval(ticker); };
+  try { doRender(); } catch(e) { gc.innerHTML = `<p style="color:red;padding:20px">Lỗi: ${e.message}</p>`; console.error('hangman error:', e); }
+}
+
+function hangmanSVG(wrong) {
+  const parts = [
+    wrong > 0 ? '<circle cx="60" cy="25" r="10" stroke-width="3"/>' : '',
+    wrong > 1 ? '<line x1="60" y1="35" x2="60" y2="70" stroke-width="3"/>' : '',
+    wrong > 2 ? '<line x1="60" y1="45" x2="40" y2="60" stroke-width="3"/>' : '',
+    wrong > 3 ? '<line x1="60" y1="45" x2="80" y2="60" stroke-width="3"/>' : '',
+    wrong > 4 ? '<line x1="60" y1="70" x2="40" y2="90" stroke-width="3"/>' : '',
+    wrong > 5 ? '<line x1="60" y1="70" x2="80" y2="90" stroke-width="3"/>' : '',
+  ].join('');
+  return `<svg width="120" height="110" viewBox="0 0 120 110" class="hm-svg">
+    <line x1="10" y1="105" x2="110" y2="105" stroke-width="3"/>
+    <line x1="30" y1="105" x2="30" y2="5" stroke-width="3"/>
+    <line x1="30" y1="5" x2="60" y2="5" stroke-width="3"/>
+    <line x1="60" y1="5" x2="60" y2="15" stroke-width="3"/>
+    <g stroke="var(--text)" fill="none">${parts}</g>
+  </svg>`;
+}
+
+/* ── 🃏 MEMORY MATCH ──────────────────────── */
+function startMemory() {
+  showGamePlay('🃏 Lật thẻ đôi');
+  const gc = document.getElementById('gameContainer');
+  const pairs = randVocab(8);
+  const cards = [];
+  pairs.forEach((v, i) => {
+    cards.push({ id: i, type: 'fr', text: v.word, pairId: i });
+    cards.push({ id: i + 8, type: 'vi', text: v.meaning, pairId: i });
+  });
+  cards.sort(() => Math.random() - 0.5);
+
+  let flipped = [], matched = new Set(), moves = 0, locked = false;
+
+  function render() {
+    document.getElementById('gameScore').textContent = `🎯 ${matched.size}/8  |  🔄 ${moves} lượt`;
+    gc.innerHTML = `<div class="mem-grid">${cards.map((c, idx) => {
+      const isFlipped = flipped.includes(idx) || matched.has(c.pairId);
+      const isMatched = matched.has(c.pairId);
+      return `<button class="mem-card ${isFlipped ? 'flipped' : ''} ${isMatched ? 'matched' : ''}" data-idx="${idx}">
+        <span class="mem-front">?</span>
+        <span class="mem-back ${c.type}">${c.text}</span>
+      </button>`;
+    }).join('')}</div>
+    ${matched.size === 8 ? `<div class="game-result win">🎉 Hoàn thành! ${moves} lượt</div><button class="pill" onclick="startMemory()">▶ Chơi lại</button>` : ''}`;
+
+    if (matched.size === 8) saveGameScore('memory', Math.max(1, 100 - moves * 3));
+
+    gc.querySelectorAll('.mem-card:not(.flipped):not(.matched)').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (locked) return;
+        const idx = parseInt(btn.dataset.idx);
+        if (flipped.includes(idx)) return;
+        flipped.push(idx);
+        render();
+        if (flipped.length === 2) {
+          moves++;
+          locked = true;
+          const [a, b] = flipped.map(i => cards[i]);
+          if (a.pairId === b.pairId && a.type !== b.type) {
+            matched.add(a.pairId);
+            flipped = [];
+            locked = false;
+            render();
+          } else {
+            setTimeout(() => { flipped = []; locked = false; render(); }, 1000);
+          }
+        }
+      });
+    });
+  }
+  render();
+}
+
+/* ── ⚡ FALLING WORDS ─────────────────────── */
+function startFalling() {
+  showGamePlay('⚡ Gõ nhanh');
+  const gc = document.getElementById('gameContainer');
+  const pool = randVocab(20);
+  let qIdx = 0, score = 0, lives = 3, ticker = null, timePerWord = 8;
+
+  function drawWord(v) {
+    const tl = timePerWord;
+    gc.innerHTML = `<div class="fall-wrap">
+      <div class="fall-status">
+        <span>${'❤️'.repeat(lives)}${'🖤'.repeat(3-lives)}</span>
+        <span class="fall-score-badge">⭐ ${score}</span>
+        <span class="fall-progress">Từ ${qIdx}/${pool.length}</span>
+      </div>
+      <div class="fall-word-box">
+        <div class="fall-fr">${v.word}</div>
+        <div class="fall-bar-wrap"><div class="fall-bar" id="fallBar" style="width:100%;background:#22c55e"></div></div>
+        <div class="fall-timer" id="fallTimer">${tl}s</div>
+      </div>
+      <p class="fall-hint">Gõ nghĩa tiếng Việt → Enter</p>
+      <input id="fallInput" class="modal-input fall-input" type="text" placeholder="Nghĩa tiếng Việt..." autocomplete="off" spellcheck="false" />
+      <p id="fallFeedback" class="fall-feedback"></p>
+    </div>`;
+
+    const input = document.getElementById('fallInput');
+    input.focus();
+    let elapsed = 0;
+
+    function setFeedback(ok, msg) {
+      const fb = document.getElementById('fallFeedback');
+      if (fb) { fb.textContent = msg; fb.style.color = ok ? '#22c55e' : '#ef4444'; }
+    }
+
+    input.onkeydown = (e) => {
+      if (e.key !== 'Enter') return;
+      const ans = input.value.trim().toLowerCase();
+      const correct = v.meaning.toLowerCase();
+      if (ans.length >= 2 && correct.includes(ans)) {
+        clearInterval(ticker);
+        score++;
+        timePerWord = Math.max(4, 8 - Math.floor(score / 3));
+        setFeedback(true, `✅ Đúng! ${v.word} = ${v.meaning}`);
+        document.getElementById('gameScore').textContent = `⭐ ${score}  ❤️ ${lives}/3`;
+        qIdx++;
+        setTimeout(() => qIdx < pool.length ? drawWord(pool[qIdx]) : endFalling(), 900);
+      } else {
+        setFeedback(false, '❌ Sai! Thử lại...');
+        input.value = '';
+      }
+    };
+
+    clearInterval(ticker);
+    ticker = setInterval(() => {
+      elapsed += 0.1;
+      const pct = Math.max(0, 100 - (elapsed / timePerWord) * 100);
+      const bar = document.getElementById('fallBar');
+      const timerEl = document.getElementById('fallTimer');
+      if (bar) {
+        bar.style.width = pct + '%';
+        bar.style.background = pct > 50 ? '#22c55e' : pct > 25 ? '#f59e0b' : '#ef4444';
+      }
+      if (timerEl) timerEl.textContent = Math.ceil(timePerWord - elapsed) + 's';
+      if (elapsed >= timePerWord) {
+        clearInterval(ticker);
+        lives--;
+        const fb = document.getElementById('fallFeedback');
+        if (fb) { fb.textContent = `⏰ Hết giờ! Đáp án: ${v.meaning}`; fb.style.color = '#ef4444'; }
+        document.getElementById('gameScore').textContent = `⭐ ${score}  ❤️ ${lives}/3`;
+        qIdx++;
+        if (lives <= 0) { setTimeout(endFalling, 1200); return; }
+        setTimeout(() => qIdx < pool.length ? drawWord(pool[qIdx]) : endFalling(), 1400);
+      }
+    }, 100);
+  }
+
+  function endFalling() {
+    clearInterval(ticker);
+    saveGameScore('falling', score);
+    gc.innerHTML = `<div class="fall-wrap">
+      <div class="game-result ${score >= 15 ? 'win' : score >= 8 ? 'neutral' : 'lose'}">
+        ${score >= 15 ? '🏆' : score >= 8 ? '🎉' : '💪'} Kết thúc!<br>
+        Điểm: <strong>${score}</strong>/${pool.length}
+      </div>
+      <button class="pill" onclick="startFalling()" style="margin-top:12px">▶ Chơi lại</button>
+    </div>`;
+    document.getElementById('gameScore').textContent = `⭐ ${score}/${pool.length}`;
+  }
+
+  activeGameCleanup = () => clearInterval(ticker);
+  try {
+    if (pool.length > 0) drawWord(pool[qIdx++]);
+    else gc.innerHTML = '<p style="padding:20px">Không có từ vựng.</p>';
+  } catch(e) { gc.innerHTML = `<p style="color:red;padding:20px">Lỗi: ${e.message}</p>`; console.error('falling error:', e); }
+}
+
+/* ── 🎯 FILL IN BLANK ─────────────────────── */
+function startFillBlank() {
+  showGamePlay('🎯 Điền chỗ trống');
+  const gc = document.getElementById('gameContainer');
+  const pool = randVocab(10).filter(v => v.example && v.example.includes(v.word));
+  const backup = randVocab(20).filter(v => v.word);
+  const questions = pool.length >= 5 ? pool : backup.slice(0, 10);
+  let qIdx = 0, score = 0;
+
+  function renderQ() {
+    if (qIdx >= questions.length) {
+      saveGameScore('fillblank', score * 10);
+      gc.innerHTML = `<div class="fb-wrap">
+        <div class="game-result ${score >= 7 ? 'win' : score >= 4 ? 'neutral' : 'lose'}">
+          ${score >= 8 ? '🏆' : score >= 5 ? '🎉' : '💪'} Hoàn thành! <strong>${score}/${questions.length}</strong> câu đúng
+        </div>
+        <button class="pill" onclick="startFillBlank()">► Chơi lại</button>
+      </div>`;
+      document.getElementById('gameScore').textContent = `✅ ${score}/${questions.length}`;
+      return;
+    }
+    const v = questions[qIdx];
+    const hasExample = v.example && v.example.toLowerCase().includes(v.word.toLowerCase());
+    const sentence = hasExample
+      ? v.example.replace(new RegExp(v.word, 'i'), '<span class="fb-blank">___</span>')
+      : `___ = ${v.meaning}`;
+    document.getElementById('gameScore').textContent = `${qIdx + 1}/${questions.length}  ⭐ ${score}`;
+    gc.innerHTML = `<div class="fb-wrap">
+      <div class="fb-sentence">${sentence}</div>
+      <p class="fb-hint">💡 Nghĩa: <em>${v.meaning}</em></p>
+      <div class="fb-input-row">
+        <input id="fbInput" class="modal-input fb-input" type="text" placeholder="Nhập từ tiếng Pháp..." autocomplete="off" autofocus />
+        <button id="fbSubmit" class="pill">Kiểm tra →</button>
+      </div>
+      <p id="fbFeedback" class="fall-feedback"></p>
+    </div>`;
+    const input = document.getElementById('fbInput');
+    const fb = document.getElementById('fbFeedback');
+    input.focus();
+
+    function check() {
+      const ans = input.value.trim().toLowerCase();
+      const correct = v.word.toLowerCase();
+      if (ans === correct || correct.startsWith(ans) && ans.length >= correct.length - 1) {
+        score++;
+        fb.textContent = `✅ Đúng! "${v.word}"`;
+        fb.style.color = '#22c55e';
+        input.disabled = true;
+        document.getElementById('fbSubmit').disabled = true;
+        setTimeout(() => { qIdx++; renderQ(); }, 1000);
+      } else {
+        fb.textContent = `❌ Chưa đúng. Đáp án: ${v.word}`;
+        fb.style.color = '#ef4444';
+        input.disabled = true;
+        document.getElementById('fbSubmit').disabled = true;
+        setTimeout(() => { qIdx++; renderQ(); }, 1500);
+      }
+    }
+    document.getElementById('fbSubmit').addEventListener('click', check);
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') check(); });
+  }
+  renderQ();
+}

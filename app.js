@@ -2233,10 +2233,11 @@ async function loadAdminUsers() {
     let totalWords = 0;
     const rows = snap.docs.map(doc => {
       const d = doc.data();
-      const stats   = d.frenchCoachStats || {};
-      const learned = Array.isArray(d.frenchCoachLearnedWords) ? d.frenchCoachLearnedWords.length : 0;
-      const history = Array.isArray(d.frenchCoachHistory) ? d.frenchCoachHistory : [];
-      const daily   = Array.isArray(d.frenchCoachDailyStats) ? d.frenchCoachDailyStats : [];
+      const inner = d.data || {};
+      const stats   = inner.frenchCoachStats || {};
+      const learned = Array.isArray(inner.frenchCoachLearnedWords) ? inner.frenchCoachLearnedWords.length : 0;
+      const history = Array.isArray(inner.frenchCoachHistory) ? inner.frenchCoachHistory : [];
+      const daily   = Array.isArray(inner.frenchCoachDailyStats) ? inner.frenchCoachDailyStats : [];
       const streak  = stats.currentStreak || 0;
       const quizDone = history.filter(h => h.type === 'quiz').length;
       const pracDone = history.filter(h => h.type === 'practice').length;

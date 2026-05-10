@@ -69,6 +69,10 @@
           <span class="menu-icon">🤖</span>
           <span class="menu-label">AI Tutor</span>
         </button>
+        <button class="menu-item" data-section="games">
+          <span class="menu-icon">🎮</span>
+          <span class="menu-label">Trò chơi</span>
+        </button>
         <button class="menu-item admin-nav-item" data-section="admin" id="adminNavItem" style="display:none">
           <span class="menu-icon">🛡️</span>
           <span class="menu-label">Admin</span>
@@ -620,6 +624,48 @@
         <div id="phonResults" class="phon-results"></div>
       </section>
 
+      <!-- Games -->
+      <section id="games" class="section">
+        <div id="gameLobby" class="game-lobby">
+          <div class="game-lobby-hero">
+            <div class="game-lobby-icon">🎮</div>
+            <h2>Trò chơi từ vựng</h2>
+            <p>Học qua chơi — chọn trò chơi để bắt đầu!</p>
+          </div>
+          <div class="game-lobby-grid">
+            <button class="game-lobby-card" data-game="hangman" onclick="startHangman()">
+              <span class="glc-icon">🔤</span>
+              <strong class="glc-name">Đoán từ</strong>
+              <span class="glc-desc">Đoán từng chữ cái trước khi hết cơ hội</span>
+            </button>
+            <button class="game-lobby-card" data-game="memory" onclick="startMemory()">
+              <span class="glc-icon">🃏</span>
+              <strong class="glc-name">Lật thẻ đôi</strong>
+              <span class="glc-desc">Tìm cặp từ Pháp – nghĩa tiếng Việt</span>
+            </button>
+            <button class="game-lobby-card" data-game="falling" onclick="startFalling()">
+              <span class="glc-icon">⚡</span>
+              <strong class="glc-name">Gõ nhanh</strong>
+              <span class="glc-desc">Gõ nghĩa trước khi từ rơi xuống đáy</span>
+            </button>
+            <button class="game-lobby-card" data-game="fillblank" onclick="startFillBlank()">
+              <span class="glc-icon">🎯</span>
+              <strong class="glc-name">Điền chỗ trống</strong>
+              <span class="glc-desc">Điền từ tiếng Pháp vào câu hoàn chỉnh</span>
+            </button>
+          </div>
+          <div id="gameLbSection" class="game-lb-section"></div>
+        </div>
+        <div id="gamePlayArea" style="display:none">
+          <div class="game-play-header">
+            <button id="gameBackBtn" class="pill secondary" onclick="showGameLobby()">← Trò khác</button>
+            <span id="gameTitle" class="game-play-title"></span>
+            <span id="gameScore" class="game-play-score"></span>
+          </div>
+          <div id="gameContainer"></div>
+        </div>
+      </section>
+
       <!-- Admin Panel -->
       <section id="admin" class="section">
         <div class="admin-header">
@@ -693,6 +739,10 @@
       </div>
 
       <div class="modal-form">
+        <div class="modal-field" id="modalNameField" style="display:none">
+          <label class="modal-label">Tên hiển thị</label>
+          <input id="modalDisplayName" class="modal-input" type="text" placeholder="Nguyễn Văn A" autocomplete="name" />
+        </div>
         <div class="modal-field">
           <label class="modal-label">Email</label>
           <input id="modalEmail" class="modal-input" type="email" placeholder="ten@example.com" autocomplete="email" />
